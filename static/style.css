@@ -1,0 +1,195 @@
+:root{
+    --bg: #f6f7fb;
+    --card-bg: #ffffff;
+    --border: #eceff3;
+    --title: #324358;
+    --muted: #7b8794;
+    --accent: #3b82f6;
+    --radius: 12px;
+    --gap: 18px;
+    --shadow: 0 6px 20px rgba(34,41,47,0.06);
+  }
+  
+  /* reset simples */
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--title);
+    -webkit-font-smoothing:antialiased;
+    padding: 20px;
+  }
+  
+  /* Cabeçalho */
+  header{
+    margin-bottom: 18px;
+  }
+  header h1{
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--title);
+  }
+  
+  /* Container central */
+  .container{
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Grid de cards semelhante à imagem */
+  .menu{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--gap);
+    align-items: stretch;
+    margin-top: 12px;
+  }
+  
+  /* Card retangular com ícone à esquerda e texto à direita */
+  .card{
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .12s ease, box-shadow .12s ease;
+    height: 72px; /* altura como na imagem */
+  }
+  
+  /* Hover */
+  .card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(34,41,47,0.09);
+  }
+  
+  /* Área do ícone (caixa pequena) */
+  .card .icon{
+    flex: 0 0 44px;
+    height: 44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius: 9px;
+    background: linear-gradient(180deg,#ffffff,#f8fbff);
+    border: 1px solid #f0f3f7;
+  }
+  .card .icon img{
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+  
+  /* Texto do card (titulo e opcional subtitulo) */
+  .card .meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+  }
+  .card .meta .title{
+    font-size:16px;
+    font-weight:600;
+    color:var(--title);
+    letter-spacing:0.1px;
+  }
+  .card .meta .subtitle{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  
+  /* Badge de notificação (opcional) */
+  .card .badge{
+    margin-left:auto;
+    background:#ff3b30;
+    color:white;
+    font-size:12px;
+    font-weight:700;
+    padding:4px 8px;
+    border-radius:999px;
+  }
+  
+  /* Mobile tweaks */
+  @media (max-width:520px){
+    .card{ height:auto; padding:12px; gap:10px; align-items:center; }
+    .card .meta .title{ font-size:15px; }
+  }
+  /* Área de conteúdo centralizada */
+.page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+/* Títulos */
+.page h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+/* Formulários bonitinhos */
+.page form {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.page input, 
+.page select {
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  min-width: 100px;
+}
+
+.page button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.page button:hover {
+  background: #2563eb;
+}
+
+/* Resultado (ex: calendário) */
+.page pre {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: left;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+/* Link voltar */
+.page a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #3b82f6;
+  font-weight: 500;
+  text-decoration: none;
+}
+.page a:hover {
+  text-decoration: underline;
+}

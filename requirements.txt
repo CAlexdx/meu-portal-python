@@ -1,0 +1,8 @@
+flask
+pyqrcode
+pillow
+pytubefix
+requests
+
+
+gunicorn
