@@ -31,11 +31,20 @@ def qrcode_page():
 @app.route("/youtube", methods=["GET", "POST"])
 def youtube_page():
     arquivo = None
-    if request.method == "POST":
-        link = request.form.get("link")
-        if link:
-            arquivo = PYtube.baixar_youtube(link, OUTPUTS)
-    return render_template("youtube.html", arquivo=arquivo)
+    erro = None
+    # Se estiver rodando no Render, mostra mensagem de aviso
+    if os.environ.get("RENDER") == "true":
+        erro = "⚠️ Este recurso está disponível apenas na versão local do portal."
+    else:
+        if request.method == "POST":
+            link = request.form.get("link")
+            if link:
+                try:
+                    arquivo = PYtube.baixar_youtube(link, OUTPUTS)
+                except Exception as e:
+                    erro = f"Erro ao baixar: {e}"
+    return render_template("youtube.html", arquivo=arquivo, erro=erro)
+
 
 @app.route("/conversor", methods=["GET", "POST"])
 def conversor_page():
