@@ -3,6 +3,6 @@ pyqrcode
 pillow
 pytubefix
 requests
-
+pypng
 
 gunicorn
