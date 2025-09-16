@@ -49,11 +49,14 @@ def youtube_page():
 @app.route("/conversor", methods=["GET", "POST"])
 def conversor_page():
     resultado = None
-    if request.method == "POST":
-        valor = float(request.form.get("valor", 0))
-        de = request.form.get("de", "USD")
-        para = request.form.get("para", "BRL")
-        resultado = conversor.converter(valor, de, para)
+    if os.environ.get("RENDER") == "true":
+        erro = "⚠️ Este recurso está disponível apenas na versão local do portal."
+    else:
+        if request.method == "POST":
+            valor = float(request.form.get("valor", 0))
+            de = request.form.get("de", "USD")
+            para = request.form.get("para", "BRL")
+            resultado = conversor.converter(valor, de, para)
     return render_template("conversor.html", resultado=resultado)
 
 @app.route("/outputs/<path:filename>")
