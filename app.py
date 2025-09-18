@@ -51,8 +51,6 @@ def conversor_page():
     resultado = None
     erro = None
     if os.environ.get("RENDER") == "true":
-        erro = "⚠️ Este recurso está disponível apenas na versão local do portal."
-    else:
         if request.method == "POST":
             try:
                 valor = float(request.form.get("valor", 0))
