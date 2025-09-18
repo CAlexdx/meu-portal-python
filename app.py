@@ -50,15 +50,25 @@ def youtube_page():
 def conversor_page():
     resultado = None
     erro = None
-    if os.environ.get("RENDER") == "true":
-        if request.method == "POST":
-            try:
-                valor = float(request.form.get("valor", 0))
-                # Fixando USD -> BRL
-                resultado = conversor.converter(valor, "USD", "BRL")
-            except Exception as e:
-                erro = f"Erro: {e}"
-    return render_template("conversor.html", resultado=resultado, erro=erro)
+    valor = None
+    de = "USD"
+    para = "BRL"
+
+    if request.method == "POST":
+        try:
+            valor = float(request.form.get("valor", 0))
+            de = request.form.get("de", "USD")
+            para = request.form.get("para", "BRL")
+            resultado = conversor.converter(valor, de, para)
+            if resultado is None:
+                erro = "Não foi possível obter a taxa de câmbio. Tente novamente."
+        except Exception as e:
+            erro = f"Erro: {e}"
+
+    return render_template("conversor.html", resultado=resultado, erro=erro, valor=valor, de=de, para=para)
+
+
+
 
 
 @app.route("/outputs/<path:filename>")
