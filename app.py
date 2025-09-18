@@ -49,15 +49,19 @@ def youtube_page():
 @app.route("/conversor", methods=["GET", "POST"])
 def conversor_page():
     resultado = None
+    erro = None
     if os.environ.get("RENDER") == "true":
         erro = "⚠️ Este recurso está disponível apenas na versão local do portal."
     else:
         if request.method == "POST":
-            valor = float(request.form.get("valor", 0))
-            de = request.form.get("de", "USD")
-            para = request.form.get("para", "BRL")
-            resultado = conversor.converter(valor, de, para)
-    return render_template("conversor.html", resultado=resultado)
+            try:
+                valor = float(request.form.get("valor", 0))
+                # Fixando USD -> BRL
+                resultado = conversor.converter(valor, "USD", "BRL")
+            except Exception as e:
+                erro = f"Erro: {e}"
+    return render_template("conversor.html", resultado=resultado, erro=erro)
+
 
 @app.route("/outputs/<path:filename>")
 def arquivos(filename):
