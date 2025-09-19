@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory, flash
 import os
-from scripts import calendario, gerar_qrcode, PYtube, conversor
+from scripts import calendario, gerar_qrcode, PYtube, conversor, media_escolar, conversor_temperatura, senhas, sorteio
 
 app = Flask(__name__)
 app.secret_key = "segredo"
@@ -68,7 +68,42 @@ def conversor_page():
     return render_template("conversor.html", resultado=resultado, erro=erro, valor=valor, de=de, para=para)
 
 
+@app.route("/media", methods=["GET", "POST"])
+def media_page():
+    resultado = None
+    if request.method == "POST":
+        nota1 = float(request.form.get("nota1", 0))
+        nota2 = float(request.form.get("nota2", 0))
+        nota3 = float(request.form.get("nota3", 0))
+        resultado = media_escolar.calcular_media([nota1, nota2, nota3])
+    return render_template("media_escolar.html", resultado=resultado)
 
+@app.route("/temperatura", methods=["GET", "POST"])
+def temperatura_page():
+    resultado = None
+    if request.method == "POST":
+        valor = float(request.form.get("valor", 0))
+        de = request.form.get("de", "C")
+        para = request.form.get("para", "F")
+        convertido = conversor_temperatura.converter_temp(valor, de, para)
+        resultado = f"{valor} {de} = {convertido:.2f} {para}"
+    return render_template("conversor_temperatura.html", resultado=resultado)
+
+@app.route("/senhas", methods=["GET", "POST"])
+def senhas_page():
+    senha = None
+    if request.method == "POST":
+        tamanho = int(request.form.get("tamanho", 12))
+        senha = senhas.gerar_senha(tamanho)
+    return render_template("senhas.html", senha=senha)
+
+@app.route("/sorteio", methods=["GET", "POST"])
+def sorteio_page():
+    resultado = None
+    if request.method == "POST":
+        nomes = request.form.get("nomes", "")
+        resultado = sorteio.sortear(nomes)
+    return render_template("sorteio.html", resultado=resultado)
 
 
 @app.route("/outputs/<path:filename>")
