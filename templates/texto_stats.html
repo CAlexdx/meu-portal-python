@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Estatísticas de Texto</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>📊 Estatísticas de Texto</h1>
+    <form method="post">
+      <textarea name="texto" rows="5" cols="40" placeholder="Digite seu texto aqui"></textarea>
+      <button type="submit">Analisar</button>
+    </form>
+    {% if resultado %}
+      <div class="resultado">
+        <p>Palavras: {{ resultado.palavras }}</p>
+        <p>Caracteres: {{ resultado.caracteres }}</p>
+        <p>Frases: {{ resultado.frases }}</p>
+      </div>
+    {% endif %}
+    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+  </div>
+</body>
+</html>

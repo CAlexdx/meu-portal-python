@@ -1,6 +1,7 @@
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, send_from_directory, flash
 import os
-from scripts import calendario, gerar_qrcode, PYtube, conversor, media_escolar, conversor_temperatura, senhas, sorteio
+from scripts import calendario, gerar_qrcode, PYtube, conversor, media_escolar, conversor_temperatura, senhas, sorteio, texto_stats, imc, editor_imagem, quiz
 
 app = Flask(__name__)
 app.secret_key = "segredo"
@@ -104,6 +105,50 @@ def sorteio_page():
         nomes = request.form.get("nomes", "")
         resultado = sorteio.sortear(nomes)
     return render_template("sorteio.html", resultado=resultado)
+
+@app.route("/texto", methods=["GET", "POST"])
+def texto_page():
+    resultado = None
+    if request.method == "POST":
+        texto = request.form.get("texto", "")
+        resultado = texto_stats.analisar_texto(texto)
+    return render_template("texto_stats.html", resultado=resultado)
+
+@app.route("/imc", methods=["GET", "POST"])
+def imc_page():
+    resultado = None
+    if request.method == "POST":
+        peso = float(request.form.get("peso", 0))
+        altura = float(request.form.get("altura", 1))
+        resultado = imc.calcular_imc(peso, altura)
+    return render_template("imc.html", resultado=resultado)
+
+@app.route("/editor", methods=["GET", "POST"])
+def editor_page():
+    arquivo = None
+    if request.method == "POST":
+        if "imagem" in request.files:
+            imagem = request.files["imagem"]
+            if imagem.filename != "":
+                caminho = os.path.join(OUTPUTS, secure_filename(imagem.filename))
+                imagem.save(caminho)
+                filtro = request.form.get("filtro", "bw")
+                arquivo = editor_imagem.aplicar_filtro(caminho, filtro, OUTPUTS)
+                arquivo = os.path.basename(arquivo)
+    return render_template("editor_imagem.html", arquivo=arquivo)
+
+@app.route("/quiz", methods=["GET", "POST"])
+def quiz_page():
+    pergunta = quiz.pegar_pergunta()
+    resultado = None
+    if request.method == "POST":
+        resposta = request.form.get("resposta")
+        correta = request.form.get("correta")
+        if resposta == correta:
+            resultado = "✅ Resposta correta!"
+        else:
+            resultado = f"❌ Resposta errada! O certo era: {correta}"
+    return render_template("quiz.html", pergunta=pergunta, resultado=resultado)
 
 
 @app.route("/outputs/<path:filename>")

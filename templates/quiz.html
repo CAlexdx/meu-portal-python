@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Quiz de Programação</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🧩 Quiz de Programação</h1>
+    {% if pergunta %}
+    <form method="post" class="quiz-form">
+        <p>{{ pergunta.pergunta }}</p>
+        {% for opcao in pergunta.opcoes %}
+          <label>
+            <input type="radio" name="resposta" value="{{ opcao }}" required> {{ opcao }}
+          </label>
+        {% endfor %}
+        <input type="hidden" name="correta" value="{{ pergunta.resposta }}">
+        <button type="submit">Responder</button>
+      </form>
+    {% endif %}
+    {% if resultado %}
+      <div class="resultado">{{ resultado }}</div>
+    {% endif %}
+    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Editor de Imagens</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🖼️ Editor de Imagens</h1>
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="imagem" required>
+      <select name="filtro">
+        <option value="bw">Preto e Branco</option>
+        <option value="invert">Inverter Cores</option>
+        <option value="blur">Borrar</option>
+      </select>
+      <button type="submit">Aplicar Filtro</button>
+    </form>
+    {% if arquivo %}
+      <div class="resultado">
+        <p>Imagem processada:</p>
+        <img src="{{ url_for('arquivos', filename=arquivo) }}" alt="Imagem editada">
+      </div>
+    {% endif %}
+    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+  </div>
+</body>
+</html>
