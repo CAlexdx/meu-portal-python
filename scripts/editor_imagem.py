@@ -12,6 +12,8 @@ def aplicar_filtro(caminho, filtro, pasta_saida="outputs"):
     elif filtro == "blur":
         img = img.filter(ImageFilter.GaussianBlur(4))
 
-    saida = os.path.join(pasta_saida, f"editado_{filtro}.png")
+    base, ext = os.path.splitext(os.path.basename(caminho))
+    nome_saida = f"{base}_{filtro}{ext}"
+    saida = os.path.join(pasta_saida, nome_saida)
     img.save(saida)
-    return saida
+    return nome_saida # Retorna apenas o nome do arquivo, não o caminho completo

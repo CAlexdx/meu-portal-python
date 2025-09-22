@@ -9,9 +9,9 @@
   <div class="page">
     <h1>📚 Média Escolar</h1>
     <form method="post">
-      <input type="number" step="0.1" name="nota1" placeholder="Nota 1" required>
-      <input type="number" step="0.1" name="nota2" placeholder="Nota 2" required>
-      <input type="number" step="0.1" name="nota3" placeholder="Nota 3" required>
+      <input type="number" step="0.1" name="nota1" placeholder="Nota 1" required min="0" max="10">
+      <input type="number" step="0.1" name="nota2" placeholder="Nota 2" required min="0" max="10">
+      <input type="number" step="0.1" name="nota3" placeholder="Nota 3" required min="0" max="10">
       <button type="submit">Calcular</button>
     </form>
     {% if resultado %}
