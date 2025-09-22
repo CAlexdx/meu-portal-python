@@ -9,8 +9,10 @@
   <div class="page">
     <h1>📅 Calendário</h1>
     <form method="post">
-      <input type="number" name="ano" placeholder="Ano" value="{{ ano }}">
-      <input type="number" name="mes" placeholder="Mês (1-12)" value="{{ mes }}">
+      <!-- Campo para o Ano: Defina um limite razoável para anos, por exemplo, de 1900 a 2100 -->
+      <input type="number" name="ano" placeholder="Ano" value="{{ ano }}" min="1900" max="2100" required>
+      <!-- Campo para o Mês: O mês deve estar entre 1 e 12 -->
+      <input type="number" name="mes" placeholder="Mês (1-12)" value="{{ mes }}" min="1" max="12" required>
       <button type="submit">Gerar</button>
     </form>
     {% if resultado %}

@@ -9,7 +9,7 @@
   <div class="page">
     <h1>🖼️ Editor de Imagens</h1>
     <form method="post" enctype="multipart/form-data">
-      <input type="file" name="imagem" required>
+      <input type="file" name="imagem" accept="image/png, image/jpeg, image/gif" required>
       <select name="filtro">
         <option value="bw">Preto e Branco</option>
         <option value="invert">Inverter Cores</option>
@@ -17,6 +17,11 @@
       </select>
       <button type="submit">Aplicar Filtro</button>
     </form>
+    
+    {% if erro %}
+      <p style="color: red;">{{ erro }}</p> {# Exibe a mensagem de erro #}
+    {% endif %}
+
     {% if arquivo %}
       <div class="resultado">
         <p>Imagem processada:</p>
