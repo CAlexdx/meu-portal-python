@@ -9,7 +9,7 @@ from PIL import Image, UnidentifiedImageError # Importe Image e UnidentifiedImag
 from scripts import (
     calendario, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, texto_stats, imc,
-    editor_imagem, quiz, orçamento, calculadora, tradutor, encurtador
+    editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador
 )
 
 app = Flask(__name__)
