@@ -158,3 +158,20 @@ header h1 {
   align-items: center;
   gap: 8px;
 }
+/* Layout do orçamento */
+.orcamento-form .campos {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.orcamento-form textarea {
+  width: 260px;
+  padding: 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 15px;
+  resize: vertical;
+}

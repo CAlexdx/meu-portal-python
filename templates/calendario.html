@@ -3,21 +3,34 @@
 <head>
   <meta charset="utf-8">
   <title>Calendário</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="page">
     <h1>📅 Calendário</h1>
+
     <form method="post">
-      <!-- Campo para o Ano: Defina um limite razoável para anos, por exemplo, de 1900 a 2100 -->
-      <input type="number" name="ano" placeholder="Ano" value="{{ ano }}" min="1900" max="2100" required>
-      <!-- Campo para o Mês: O mês deve estar entre 1 e 12 -->
-      <input type="number" name="mes" placeholder="Mês (1-12)" value="{{ mes }}" min="1" max="12" required>
+      <label for="ano">Ano:</label>
+      <input type="number" id="ano" name="ano" value="{{ ano }}" required>
+      <label for="mes">Mês:</label>
+      <input type="number" id="mes" name="mes" value="{{ mes }}" min="1" max="12" required>
       <button type="submit">Gerar</button>
     </form>
+
     {% if resultado %}
       <pre>{{ resultado }}</pre>
     {% endif %}
+
+    {% if feriados %}
+      <h2>🎉 Feriados do mês</h2>
+      <ul>
+        {% for dia, nome in feriados.items() %}
+          <li>{{ dia }}/{{ mes }}/{{ ano }} - {{ nome }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
     <p><a href="{{ url_for('index') }}">Voltar</a></p>
   </div>
 </body>

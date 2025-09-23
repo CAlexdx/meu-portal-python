@@ -3,42 +3,33 @@
 <head>
   <meta charset="utf-8">
   <title>Orçamento Financeiro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="page">
     <h1>💼 Orçamento Financeiro</h1>
-
     <p>Escreva receitas e despesas em linhas no formato <code>descrição:valor</code>.</p>
 
-    <form method="post">
-      <label>Receitas (uma por linha):</label>
-      <textarea name="receitas" rows="5" placeholder="Salário:2500&#10;Bicos:200"></textarea>
-
-      <label>Despesas (uma por linha):</label>
-      <textarea name="despesas" rows="5" placeholder="Aluguel:800&#10;Conta de luz:120"></textarea>
-
+    <form method="post" class="orcamento-form">
+      <div class="campos">
+        <div>
+          <label>Receitas (uma por linha):</label>
+          <textarea name="receitas" rows="6" placeholder="Ex: Salário:2500&#10;Bicos:200">{{ request.form.get('receitas', '') }}</textarea>
+        </div>
+        <div>
+          <label>Despesas (uma por linha):</label>
+          <textarea name="despesas" rows="6" placeholder="Ex: Aluguel:800&#10;Conta de luz:120">{{ request.form.get('despesas', '') }}</textarea>
+        </div>
+      </div>
       <button type="submit">Gerar Resumo</button>
     </form>
 
     {% if resumo %}
-      <div class="resultado">
-        <p><strong>Total Receitas:</strong> R$ {{ resumo.total_receitas }}</p>
-        <p><strong>Total Despesas:</strong> R$ {{ resumo.total_despesas }}</p>
-        <p><strong>Saldo:</strong> R$ {{ resumo.saldo }} — <em>{{ resumo.status }}</em></p>
-
-        {% if resumo.percentuais_despesas %}
-          <h4>Despesas (porcentagem do total de receitas)</h4>
-          <ul style="text-align:left;">
-            {% for desc, valor, pct in resumo.percentuais_despesas %}
-              <li>{{ desc }} — R$ {{ valor }} ({{ pct }}%)</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-
-        <p><a href="{{ url_for('arquivos', filename=csv_file) }}">📥 Baixar relatório CSV</a></p>
-      </div>
+      <h2>📊 Resumo</h2>
+      <pre>{{ resumo }}</pre>
+      {% if csv_file %}
+        <p><a href="{{ url_for('arquivos', filename=csv_file) }}">📥 Baixar CSV</a></p>
+      {% endif %}
     {% endif %}
 
     <p><a href="{{ url_for('index') }}">Voltar</a></p>

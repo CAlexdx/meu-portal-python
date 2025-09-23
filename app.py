@@ -30,18 +30,20 @@ def index():
 
 @app.route("/calendario", methods=["GET", "POST"])
 def calendario_page():
-    # Adicionando validação para ano e mês (se desejar, similar ao editor_imagem)
+    # Ano e mês recebidos do formulário (padrão: setembro/2025)
     ano = int(request.form.get("ano", 2025))
     mes = int(request.form.get("mes", 9))
 
-    # Exemplo de validação de ano/mês no servidor:
+    # Validação de ano e mês
     if not (1900 <= ano <= 2100) or not (1 <= mes <= 12):
         flash("Ano ou mês inválido. Por favor, insira valores válidos (ex: Ano 1900-2100, Mês 1-12).", "error")
-        return render_template("calendario.html", resultado=None, ano=ano, mes=mes)
+        return render_template("calendario.html", resultado=None, feriados=None, ano=ano, mes=mes)
 
+    # Chama a função que gera o calendário e retorna também os feriados
+    resultado, feriados = calendario.gerar_calendario(ano, mes)
 
-    resultado = calendario.gerar_calendario(ano, mes)
-    return render_template("calendario.html", resultado=resultado, ano=ano, mes=mes)
+    return render_template("calendario.html", resultado=resultado, feriados=feriados, ano=ano, mes=mes)
+
 
 @app.route("/qrcode", methods=["GET", "POST"])
 def qrcode_page():
