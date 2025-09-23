@@ -3,33 +3,36 @@
 <head>
   <meta charset="utf-8">
   <title>Calendário</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="page">
     <h1>📅 Calendário</h1>
-
     <form method="post">
-      <label for="ano">Ano:</label>
-      <input type="number" id="ano" name="ano" value="{{ ano }}" required>
-      <label for="mes">Mês:</label>
-      <input type="number" id="mes" name="mes" value="{{ mes }}" min="1" max="12" required>
+      <input type="number" name="ano" min="1900" max="2100" value="{{ ano }}" required>
+      <input type="number" name="mes" min="1" max="12" value="{{ mes }}" required>
       <button type="submit">Gerar</button>
     </form>
 
     {% if resultado %}
-      <pre>{{ resultado }}</pre>
+      <pre class="resultado">{{ resultado }}</pre>
+      {% if feriados %}
+        <h3>🎉 Feriados:</h3>
+        <ul>
+          {% for dia, nome in feriados.items() %}
+            <li>{{ dia }} - {{ nome }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
     {% endif %}
 
-    {% if feriados %}
-      <h2>🎉 Feriados do mês</h2>
-      <ul>
-        {% for dia, nome in feriados.items() %}
-          <li>{{ dia }}/{{ mes }}/{{ ano }} - {{ nome }}</li>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alerta {{ category }}">{{ message }}</div>
         {% endfor %}
-      </ul>
-    {% endif %}
+      {% endif %}
+    {% endwith %}
 
     <p><a href="{{ url_for('index') }}">Voltar</a></p>
   </div>

@@ -9,12 +9,22 @@
   <div class="page">
     <h1>🔑 Gerador de Senhas</h1>
     <form method="post">
-      <input type="number" name="tamanho" placeholder="Tamanho (4 a 64)" min="4" max="64" required>
+      <input type="number" name="tamanho" min="4" max="32" value="12" required>
       <button type="submit">Gerar</button>
     </form>
+
     {% if senha %}
-      <div class="resultado">{{ senha }}</div>
+      <div class="resultado">Senha: {{ senha }}</div>
     {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alerta {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     <p><a href="{{ url_for('index') }}">Voltar</a></p>
   </div>
 </body>

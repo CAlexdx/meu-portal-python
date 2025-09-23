@@ -2,33 +2,31 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meu Portal Python</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <header><h1>Meu Portal Python</h1></header>
-  <main>
-    <div class="menu">
+  <div class="page">
+    <h1>🚀 Meu Portal Python</h1>
+    <div class="grid">
       <a class="card" href="{{ url_for('calendario_page') }}">📅 Calendário</a>
-      <a class="card" href="{{ url_for('qrcode_page') }}">🔳 QR Code</a>
-      <a class="card" href="{{ url_for('youtube_page') }}">▶️ YouTube Downloader</a>
-      <a class="card" href="{{ url_for('conversor_page') }}">💱 Conversor de Moedas</a>
-      <a class="card" href="{{ url_for('media_page') }}">📚 Média Escolar</a>
-      <a class="card" href="{{ url_for('temperatura_page') }}">🌡️ Conversor de Temperatura</a>
-      <a class="card" href="{{ url_for('senhas_page') }}">🔑 Gerador de Senhas</a>
+      <a class="card" href="{{ url_for('qrcode_page') }}">🔲 QR Code</a>
+      <a class="card" href="{{ url_for('youtube_page') }}">▶️ YouTube</a>
+      <a class="card" href="{{ url_for('conversor_page') }}">💱 Conversor</a>
+      <a class="card" href="{{ url_for('media_page') }}">📘 Média Escolar</a>
+      <a class="card" href="{{ url_for('temperatura_page') }}">🌡️ Temperatura</a>
+      <a class="card" href="{{ url_for('senhas_page') }}">🔑 Senhas</a>
       <a class="card" href="{{ url_for('sorteio_page') }}">🎲 Sorteio</a>
-      <a class="card" href="{{ url_for('texto_page') }}">📊 Estatísticas de Texto</a>
-      <a class="card" href="{{ url_for('imc_page') }}">📐 Calculadora de IMC</a>
+      <a class="card" href="{{ url_for('equipes_page') }}">👥 Equipes</a>
+      <a class="card" href="{{ url_for('texto_page') }}">📝 Estatísticas de Texto</a>
+      <a class="card" href="{{ url_for('imc_page') }}">⚖️ IMC</a>
       <a class="card" href="{{ url_for('editor_page') }}">🖼️ Editor de Imagens</a>
-      <a class="card" href="{{ url_for('quiz_page') }}">🧩 Quiz de Programação</a>
-      <a class="card" href="{{ url_for('orcamento_page') }}">💼 Orçamento Financeiro</a>
+      <a class="card" href="{{ url_for('quiz_page') }}">❓ Quiz</a>
+      <a class="card" href="{{ url_for('orcamento_page') }}">💰 Orçamento</a>
       <a class="card" href="{{ url_for('calculadora_page') }}">🧮 Calculadora</a>
-      <a class="card" href="{{ url_for('tradutor_page') }}">🔤 Tradutor</a>
+      <a class="card" href="{{ url_for('tradutor_page') }}">🌍 Tradutor</a>
       <a class="card" href="{{ url_for('encurtador_page') }}">🔗 Encurtador</a>
-      <a class="card" href="{{ url_for('sorteio_page') }}">🎲 Sorteio Simples</a>
-      <a class="card" href="{{ url_for('equipes_page') }}">👥 Sorteio de Equipes</a>
     </div>
-  </main>
+  </div>
 </body>
 </html>
