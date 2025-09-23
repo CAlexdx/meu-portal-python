@@ -3,13 +3,14 @@ import requests
 
 def encurtar(link):
     try:
-        # is.gd API: https://is.gd/create.php?format=simple&url=...
         url = "https://is.gd/create.php"
         params = {"format": "simple", "url": link}
-        r = requests.get(url, params=params, timeout=8)
+        r = requests.get(url, params=params, timeout=6)
         if r.status_code == 200:
             short = r.text.strip()
-            return short
+            # is.gd pode retornar texto de erro; checar esquema
+            if short.startswith("http"):
+                return short
         return None
-    except:
+    except Exception:
         return None

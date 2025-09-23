@@ -1,18 +1,14 @@
-# scripts/orcamento.py
+# scripts/orcamento.py  (atualizado)
 from datetime import datetime
-import csv
-import os
+import csv, os
+
+MAX_LINHAS = 200
+MAX_VALOR = 1e9
 
 def parse_linhas(texto):
-    """
-    Recebe texto com linhas no formato:
-      descricao:valor
-    Exemplo:
-      Salário:2500
-      Aluguel:800
-    Retorna lista de (descricao, valor_float)
-    """
     linhas = [l.strip() for l in texto.splitlines() if l.strip()]
+    if len(linhas) > MAX_LINHAS:
+        raise ValueError(f"Muitas linhas (máx {MAX_LINHAS}).")
     itens = []
     for l in linhas:
         if ":" in l:
@@ -20,7 +16,9 @@ def parse_linhas(texto):
             try:
                 v = float(val.strip().replace(",", "."))
             except:
-                v = 0.0
+                raise ValueError(f"Valor inválido na linha: {l}")
+            if abs(v) > MAX_VALOR:
+                raise ValueError("Valor muito grande em alguma linha.")
             itens.append((desc.strip(), v))
     return itens
 
@@ -33,7 +31,6 @@ def resumir(receitas_texto, despesas_texto):
     saldo = total_receitas - total_despesas
     status = "Superávit" if saldo >= 0 else "Déficit"
 
-    # percentuais de cada despesa (se houver)
     percentuais_despesas = []
     for desc, v in despesas:
         pct = (v / total_receitas * 100) if total_receitas > 0 else 0
@@ -50,21 +47,3 @@ def resumir(receitas_texto, despesas_texto):
         "gerado_em": datetime.utcnow().isoformat()
     }
     return resumo
-
-def gerar_csv(resumo, pasta="outputs"):
-    os.makedirs(pasta, exist_ok=True)
-    nome = f"orcamento_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}.csv"
-    caminho = os.path.join(pasta, nome)
-    with open(caminho, "w", newline='', encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Tipo", "Descrição", "Valor"])
-        for desc, v in resumo["receitas"]:
-            writer.writerow(["Receita", desc, v])
-        for desc, v in resumo["despesas"]:
-            writer.writerow(["Despesa", desc, v])
-        writer.writerow([])
-        writer.writerow(["Total Receitas", resumo["total_receitas"]])
-        writer.writerow(["Total Despesas", resumo["total_despesas"]])
-        writer.writerow(["Saldo", resumo["saldo"]])
-        writer.writerow(["Status", resumo["status"]])
-    return caminho

@@ -1,14 +1,13 @@
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, send_from_directory, flash
 import os
-from PIL import Image, UnidentifiedImageError # Importe Image e UnidentifiedImageError
-# from scripts import calendario, gerar_qrcode, PYtube, conversor, media_escolar, conversor_temperatura, senhas, sorteio, texto_stats, imc, editor_imagem, quiz
-# ^^^ Comentei para evitar erros se você não tiver todos os scripts, descomente no seu ambiente real
+from PIL import Image, UnidentifiedImageError
+from uuid import uuid4
 
-# Ajuste os imports para o seu projeto real
+# Imports dos módulos (ajuste conforme seus scripts disponíveis)
 from scripts import (
     calendario, gerar_qrcode, PYtube, conversor, media_escolar,
-    conversor_temperatura, senhas, sorteio, texto_stats, imc,
+    conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
     editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador
 )
 
@@ -28,59 +27,70 @@ def allowed_file(filename):
 def index():
     return render_template("index.html")
 
+# ==========================
+# Calendário
+# ==========================
 @app.route("/calendario", methods=["GET", "POST"])
 def calendario_page():
-    # Ano e mês recebidos do formulário (padrão: setembro/2025)
-    ano = int(request.form.get("ano", 2025))
-    mes = int(request.form.get("mes", 9))
+    try:
+        ano = int(request.form.get("ano", 2025))
+        mes = int(request.form.get("mes", 9))
+    except ValueError:
+        flash("Ano ou mês inválido.", "error")
+        return render_template("calendario.html", resultado=None, feriados=None)
 
-    # Validação de ano e mês
     if not (1900 <= ano <= 2100) or not (1 <= mes <= 12):
-        flash("Ano ou mês inválido. Por favor, insira valores válidos (ex: Ano 1900-2100, Mês 1-12).", "error")
+        flash("Ano ou mês fora do intervalo permitido.", "error")
         return render_template("calendario.html", resultado=None, feriados=None, ano=ano, mes=mes)
 
-    # Chama a função que gera o calendário e retorna também os feriados
     resultado, feriados = calendario.gerar_calendario(ano, mes)
-
     return render_template("calendario.html", resultado=resultado, feriados=feriados, ano=ano, mes=mes)
 
-
+# ==========================
+# QR Code
+# ==========================
 @app.route("/qrcode", methods=["GET", "POST"])
 def qrcode_page():
     arquivo = None
     if request.method == "POST":
-        texto = request.form.get("texto")
-        if texto:
-            arquivo = gerar_qrcode.gerar_qrcode(texto, OUTPUTS)
-            arquivo = os.path.basename(arquivo)
+        texto = request.form.get("texto", "").strip()
+        if not texto:
+            flash("Digite um texto para gerar o QR Code.", "error")
+        else:
+            try:
+                arquivo = gerar_qrcode.gerar_qrcode(texto, OUTPUTS)
+                arquivo = os.path.basename(arquivo)
+            except Exception as e:
+                flash(f"Erro ao gerar QR Code: {e}", "error")
     return render_template("qrcode.html", arquivo=arquivo)
 
+# ==========================
+# YouTube Downloader
+# ==========================
 @app.route("/youtube", methods=["GET", "POST"])
 def youtube_page():
     arquivo = None
     erro = None
-    # Se estiver rodando no Render, mostra mensagem de aviso
     if os.environ.get("RENDER") == "true":
-        erro = "⚠️ Este recurso está disponível apenas na versão local do portal."
-    else:
-        if request.method == "POST":
-            link = request.form.get("link")
-            if link:
-                try:
-                    arquivo = PYtube.baixar_youtube(link, OUTPUTS)
-                except Exception as e:
-                    erro = f"Erro ao baixar: {e}"
+        erro = "⚠️ Este recurso só funciona na versão local do portal."
+    elif request.method == "POST":
+        link = request.form.get("link", "").strip()
+        if not link.startswith("http"):
+            erro = "Link inválido."
+        else:
+            try:
+                arquivo = PYtube.baixar_youtube(link, OUTPUTS)
+            except Exception:
+                erro = "Erro ao baixar o vídeo (restrição ou serviço indisponível)."
     return render_template("youtube.html", arquivo=arquivo, erro=erro)
 
-
+# ==========================
+# Conversor de moedas
+# ==========================
 @app.route("/conversor", methods=["GET", "POST"])
 def conversor_page():
-    resultado = None
-    erro = None
-    valor = None
-    de = "USD"
-    para = "BRL"
-
+    resultado, erro, valor = None, None, None
+    de, para = "USD", "BRL"
     if request.method == "POST":
         try:
             valor = float(request.form.get("valor", 0))
@@ -88,28 +98,32 @@ def conversor_page():
             para = request.form.get("para", "BRL")
             resultado = conversor.converter(valor, de, para)
             if resultado is None:
-                erro = "Não foi possível obter a taxa de câmbio. Tente novamente."
-        except ValueError: # Captura erro se o valor não for um número válido
-            erro = "Valor inválido. Por favor, insira um número."
-        except Exception as e:
-            erro = f"Erro: {e}"
-
+                erro = "Não foi possível obter a taxa de câmbio."
+        except ValueError:
+            erro = "Valor inválido."
     return render_template("conversor.html", resultado=resultado, erro=erro, valor=valor, de=de, para=para)
 
-
+# ==========================
+# Média Escolar
+# ==========================
 @app.route("/media", methods=["GET", "POST"])
 def media_page():
     resultado = None
     if request.method == "POST":
         try:
-            nota1 = float(request.form.get("nota1", 0))
-            nota2 = float(request.form.get("nota2", 0))
-            nota3 = float(request.form.get("nota3", 0))
-            resultado = media_escolar.calcular_media([nota1, nota2, nota3])
+            notas = [
+                float(request.form.get("nota1", 0)),
+                float(request.form.get("nota2", 0)),
+                float(request.form.get("nota3", 0)),
+            ]
+            resultado = media_escolar.calcular_media(notas)
         except ValueError:
-            flash("Notas inválidas. Por favor, insira números válidos para as notas.", "error")
+            flash("Notas inválidas.", "error")
     return render_template("media_escolar.html", resultado=resultado)
 
+# ==========================
+# Conversor de temperatura
+# ==========================
 @app.route("/temperatura", methods=["GET", "POST"])
 def temperatura_page():
     resultado = None
@@ -121,104 +135,117 @@ def temperatura_page():
             convertido = conversor_temperatura.converter_temp(valor, de, para)
             resultado = f"{valor} {de} = {convertido:.2f} {para}"
         except ValueError:
-            flash("Valor inválido. Por favor, insira um número para a temperatura.", "error")
+            flash("Valor inválido.", "error")
     return render_template("conversor_temperatura.html", resultado=resultado)
 
+# ==========================
+# Gerador de Senhas
+# ==========================
 @app.route("/senhas", methods=["GET", "POST"])
 def senhas_page():
     senha = None
     if request.method == "POST":
         try:
             tamanho = int(request.form.get("tamanho", 12))
-            if not (4 <= tamanho <= 32): # Exemplo de limite de tamanho
-                flash("Tamanho da senha inválido. Deve ser entre 4 e 32 caracteres.", "error")
+            if not (4 <= tamanho <= 32):
+                flash("Tamanho inválido (mín 4, máx 32).", "error")
             else:
                 senha = senhas.gerar_senha(tamanho)
         except ValueError:
-            flash("Tamanho inválido. Por favor, insira um número inteiro.", "error")
+            flash("Entrada inválida.", "error")
     return render_template("senhas.html", senha=senha)
 
+# ==========================
+# Sorteio simples
+# ==========================
 @app.route("/sorteio", methods=["GET", "POST"])
 def sorteio_page():
     resultado = None
     if request.method == "POST":
         nomes = request.form.get("nomes", "")
-        if not nomes.strip():
-            flash("Por favor, insira nomes para o sorteio.", "error")
-        else:
-            resultado = sorteio.sortear(nomes)
+        resultado, err = sorteio.sortear(nomes)
+        if err:
+            flash(err, "error")
     return render_template("sorteio.html", resultado=resultado)
 
+# ==========================
+# Sorteio de equipes
+# ==========================
+@app.route("/equipes", methods=["GET", "POST"])
+def equipes_page():
+    equipes, erro = None, None
+    if request.method == "POST":
+        nomes = request.form.get("nomes", "")
+        try:
+            qtd = int(request.form.get("qtd", 2))
+            equipes, erro = sorteio_equipes.sortear_equipes(nomes, qtd)
+        except ValueError:
+            erro = "Número de equipes inválido."
+    return render_template("equipes.html", equipes=equipes, erro=erro)
+
+# ==========================
+# Texto Stats
+# ==========================
 @app.route("/texto", methods=["GET", "POST"])
 def texto_page():
     resultado = None
     if request.method == "POST":
         texto = request.form.get("texto", "")
-        resultado = texto_stats.analisar_texto(texto)
+        resultado, err = texto_stats.analisar_texto(texto)
+        if err:
+            flash(err, "error")
     return render_template("texto_stats.html", resultado=resultado)
 
+# ==========================
+# IMC
+# ==========================
 @app.route("/imc", methods=["GET", "POST"])
 def imc_page():
     resultado = None
     if request.method == "POST":
-        try:
-            peso = float(request.form.get("peso", 0))
-            altura = float(request.form.get("altura", 1))
-            if altura <= 0: # Prevenir divisão por zero
-                 flash("Altura deve ser maior que zero.", "error")
-            else:
-                resultado = imc.calcular_imc(peso, altura)
-        except ValueError:
-            flash("Valores inválidos. Por favor, insira números para peso e altura.", "error")
+        peso = request.form.get("peso", 0)
+        altura = request.form.get("altura", 1)
+        res, err = imc.calcular_imc(peso, altura)
+        if err:
+            flash(err, "error")
+        else:
+            resultado = res
     return render_template("imc.html", resultado=resultado)
 
-# =======================================================
-# Rota do Editor de Imagens com validação aprimorada
-# =======================================================
+# ==========================
+# Editor de Imagens
+# ==========================
 @app.route("/editor", methods=["GET", "POST"])
 def editor_page():
     arquivo = None
-    # Removi a variável 'erro' aqui e usarei 'flash' para mensagens de erro/sucesso
     if request.method == "POST":
         if "imagem" not in request.files:
-            flash("Nenhum arquivo de imagem foi enviado.", "error")
+            flash("Nenhum arquivo enviado.", "error")
         else:
             imagem = request.files["imagem"]
-            
             if imagem.filename == "":
                 flash("Nenhum arquivo selecionado.", "error")
             elif not allowed_file(imagem.filename):
-                flash("Extensão de arquivo não permitida. Por favor, envie arquivos com extensão .png, .jpg, .jpeg ou .gif.", "error")
+                flash("Extensão não permitida.", "error")
             else:
                 try:
-                    # Salva o arquivo temporariamente para permitir a checagem do mimetype pelo PIL
-                    caminho_temp = os.path.join(OUTPUTS, secure_filename(imagem.filename))
+                    nome_seguro = f"{uuid4().hex}_{secure_filename(imagem.filename)}"
+                    caminho_temp = os.path.join(OUTPUTS, nome_seguro)
                     imagem.save(caminho_temp)
-
-                    # Tenta abrir o arquivo com PIL para verificar se é uma imagem válida
-                    Image.open(caminho_temp).verify() # .verify() tenta carregar o cabeçalho
-                    
-                    # Se chegou até aqui, é uma imagem válida e tem extensão permitida
+                    Image.open(caminho_temp).verify()
                     filtro = request.form.get("filtro", "bw")
                     arquivo_processado_path = editor_imagem.aplicar_filtro(caminho_temp, filtro, OUTPUTS)
                     arquivo = os.path.basename(arquivo_processado_path)
                     flash("Filtro aplicado com sucesso!", "success")
-                    
-                    # Opcional: Remover o arquivo temporário original se você não precisar dele
-                    # os.remove(caminho_temp)
-
                 except UnidentifiedImageError:
-                    # Se o PIL não conseguir identificar como imagem
-                    flash("O arquivo enviado não é uma imagem válida ou está corrompido.", "error")
-                    if os.path.exists(caminho_temp): # Limpa o arquivo inválido
-                        os.remove(caminho_temp)
-                except Exception as e:
-                    # Outros erros durante o processamento da imagem
-                    flash(f"Ocorreu um erro ao processar a imagem: {e}", "error")
-                    if os.path.exists(caminho_temp): # Limpa o arquivo se deu erro
+                    flash("Arquivo inválido ou corrompido.", "error")
+                    if os.path.exists(caminho_temp):
                         os.remove(caminho_temp)
     return render_template("editor_imagem.html", arquivo=arquivo)
 
+# ==========================
+# Quiz
+# ==========================
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz_page():
     pergunta = quiz.pegar_pergunta()
@@ -226,29 +253,32 @@ def quiz_page():
     if request.method == "POST":
         resposta = request.form.get("resposta")
         correta = request.form.get("correta")
-        if resposta == correta:
-            resultado = "✅ Resposta correta!"
-        else:
-            resultado = f"❌ Resposta errada! O certo era: {correta}"
+        resultado = "✅ Resposta correta!" if resposta == correta else f"❌ Errado! O certo era: {correta}"
     return render_template("quiz.html", pergunta=pergunta, resultado=resultado)
 
+# ==========================
+# Orçamento
+# ==========================
 @app.route("/orcamento", methods=["GET", "POST"])
 def orcamento_page():
-    resumo = None
-    csv_file = None
+    resumo, csv_file = None, None
     if request.method == "POST":
         receitas = request.form.get("receitas", "")
         despesas = request.form.get("despesas", "")
-        resumo = orcamento.resumir(receitas, despesas)
-        # gerar csv (opcional)
-        caminho_csv = orcamento.gerar_csv(resumo, OUTPUTS)
-        csv_file = os.path.basename(caminho_csv)
+        try:
+            resumo = orcamento.resumir(receitas, despesas)
+            caminho_csv = orcamento.gerar_csv(resumo, OUTPUTS)
+            csv_file = os.path.basename(caminho_csv)
+        except ValueError as e:
+            flash(str(e), "error")
     return render_template("orcamento.html", resumo=resumo, csv_file=csv_file)
 
+# ==========================
+# Calculadora
+# ==========================
 @app.route("/calculadora", methods=["GET", "POST"])
 def calculadora_page():
-    resultado = None
-    erro = None
+    resultado, erro = None, None
     if request.method == "POST":
         oper = request.form.get("operacao")
         a = request.form.get("a")
@@ -260,10 +290,12 @@ def calculadora_page():
             resultado = round(res, 6) if isinstance(res, (int, float)) else res
     return render_template("calculadora.html", resultado=resultado, erro=erro)
 
+# ==========================
+# Tradutor
+# ==========================
 @app.route("/tradutor", methods=["GET", "POST"])
 def tradutor_page():
-    traducao = None
-    erro = None
+    traducao, erro = None, None
     if request.method == "POST":
         texto = request.form.get("texto", "")
         target = request.form.get("target", "en")
@@ -271,21 +303,25 @@ def tradutor_page():
         if traduzido:
             traducao = traduzido
         else:
-            erro = "Não foi possível traduzir no momento. Tente novamente mais tarde."
+            erro = "Não foi possível traduzir no momento."
     return render_template("tradutor.html", traducao=traducao, erro=erro)
 
+# ==========================
+# Encurtador de links
+# ==========================
 @app.route("/encurtador", methods=["GET", "POST"])
 def encurtador_page():
-    short = None
-    erro = None
+    short, erro = None, None
     if request.method == "POST":
         link = request.form.get("link", "")
         short = encurtador.encurtar(link)
         if not short:
-            erro = "Falha ao encurtar. Verifique o link e tente novamente."
+            erro = "Falha ao encurtar. Verifique o link."
     return render_template("encurtador.html", short=short, erro=erro)
 
-
+# ==========================
+# Outputs
+# ==========================
 @app.route("/outputs/<path:filename>")
 def arquivos(filename):
     return send_from_directory(OUTPUTS, filename)

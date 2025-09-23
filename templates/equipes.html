@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Sorteio de Equipes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>👥 Sorteio de Equipes</h1>
+    <form method="post">
+      <textarea name="nomes" rows="4" cols="40" placeholder="Digite nomes separados por vírgula"></textarea>
+      <input type="number" name="qtd" min="2" max="10" placeholder="Quantidade de equipes" required>
+      <button type="submit">Sortear Equipes</button>
+    </form>
+
+    {% if erro %}
+      <div class="resultado" style="color:red;">{{ erro }}</div>
+    {% endif %}
+
+    {% if equipes %}
+      <h2>Resultado:</h2>
+      <ul>
+        {% for i, grupo in enumerate(equipes, start=1) %}
+          <li><strong>Equipe {{ i }}:</strong> {{ ", ".join(grupo) }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+  </div>
+</body>
+</html>
