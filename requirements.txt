@@ -4,5 +4,6 @@ pillow
 pytubefix
 requests
 pypng
+werkzeug
 
 gunicorn

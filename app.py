@@ -9,7 +9,7 @@ from PIL import Image, UnidentifiedImageError # Importe Image e UnidentifiedImag
 from scripts import (
     calendario, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, texto_stats, imc,
-    editor_imagem, quiz
+    editor_imagem, quiz, orçamento, calculadora, tradutor, encurtador
 )
 
 app = Flask(__name__)
@@ -229,6 +229,59 @@ def quiz_page():
         else:
             resultado = f"❌ Resposta errada! O certo era: {correta}"
     return render_template("quiz.html", pergunta=pergunta, resultado=resultado)
+
+@app.route("/orcamento", methods=["GET", "POST"])
+def orcamento_page():
+    resumo = None
+    csv_file = None
+    if request.method == "POST":
+        receitas = request.form.get("receitas", "")
+        despesas = request.form.get("despesas", "")
+        resumo = orcamento.resumir(receitas, despesas)
+        # gerar csv (opcional)
+        caminho_csv = orcamento.gerar_csv(resumo, OUTPUTS)
+        csv_file = os.path.basename(caminho_csv)
+    return render_template("orcamento.html", resumo=resumo, csv_file=csv_file)
+
+@app.route("/calculadora", methods=["GET", "POST"])
+def calculadora_page():
+    resultado = None
+    erro = None
+    if request.method == "POST":
+        oper = request.form.get("operacao")
+        a = request.form.get("a")
+        b = request.form.get("b")
+        res, err = calculadora.calcular(oper, a, b)
+        if err:
+            erro = err
+        else:
+            resultado = round(res, 6) if isinstance(res, (int, float)) else res
+    return render_template("calculadora.html", resultado=resultado, erro=erro)
+
+@app.route("/tradutor", methods=["GET", "POST"])
+def tradutor_page():
+    traducao = None
+    erro = None
+    if request.method == "POST":
+        texto = request.form.get("texto", "")
+        target = request.form.get("target", "en")
+        traduzido = tradutor.traduzir(texto, source="pt", target=target)
+        if traduzido:
+            traducao = traduzido
+        else:
+            erro = "Não foi possível traduzir no momento. Tente novamente mais tarde."
+    return render_template("tradutor.html", traducao=traducao, erro=erro)
+
+@app.route("/encurtador", methods=["GET", "POST"])
+def encurtador_page():
+    short = None
+    erro = None
+    if request.method == "POST":
+        link = request.form.get("link", "")
+        short = encurtador.encurtar(link)
+        if not short:
+            erro = "Falha ao encurtar. Verifique o link e tente novamente."
+    return render_template("encurtador.html", short=short, erro=erro)
 
 
 @app.route("/outputs/<path:filename>")
