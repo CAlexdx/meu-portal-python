@@ -33,29 +33,38 @@
   /* ================================
      🧭 MENU HORIZONTAL
      ================================ */
-  .menu-horizontal {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--gap);
-    margin: 20px auto;
-  }
-  
-  .menu-horizontal a {
-    padding: 10px 16px;
-    border-radius: var(--radius);
-    border: 1px solid #ddd;
-    background: #fff;
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.2s;
-  }
-  .menu-horizontal a:hover {
-    background: var(--accent);
-    color: #fff;
-  }
-  
+     .menu-horizontal {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--gap);
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    .menu-horizontal a {
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      border: 1px solid #ddd;
+      background: #fff;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .menu-horizontal a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    
+    /* Ajuste responsivo */
+    @media (max-width: 1024px) {
+      .menu-horizontal { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .menu-horizontal { grid-template-columns: repeat(2, 1fr); }
+      header h1 { font-size: 22px; }
+    }
+
   /* ================================
      📄 PÁGINAS INTERNAS
      ================================ */
@@ -163,4 +172,15 @@
     .page { padding: 15px; }
     .quiz-opcoes { flex-direction: column; align-items: stretch; }
   }
-  
+  /* Mantém os botões lado a lado */
+.botoes-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.botoes-acoes button {
+  flex: none;
+  min-width: 120px;
+}

@@ -1,8 +1,26 @@
-def calcular_media(notas):
-    media = sum(notas) / len(notas)
-    if media >= 7:
-        return f"Média: {media:.2f} ✅ Aprovado"
-    elif media >= 5:
-        return f"Média: {media:.2f} ⚠️ Recuperação"
-    else:
-        return f"Média: {media:.2f} ❌ Reprovado"
+def calcular_media(materias_dict):
+    """
+    materias_dict = {
+        "Matemática": {"Prova": 7.5, "Trabalho": 8.0},
+        "Português": {"Prova": 6.0, "Redação": 7.0}
+    }
+    """
+    resultado = {}
+    todas_notas = []
+
+    for materia, avaliacoes in materias_dict.items():
+        notas = []
+        for tipo, nota in avaliacoes.items():
+            try:
+                n = float(nota)
+                if 0 <= n <= 10:
+                    notas.append(n)
+            except ValueError:
+                continue
+        if notas:
+            media = round(sum(notas) / len(notas), 2)
+            resultado[materia] = {"avaliacoes": avaliacoes, "media": media}
+            todas_notas.extend(notas)
+
+    media_geral = round(sum(todas_notas) / len(todas_notas), 2) if todas_notas else 0
+    return {"materias": resultado, "geral": media_geral}

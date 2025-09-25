@@ -4,47 +4,84 @@
   <meta charset="utf-8">
   <title>Média Escolar</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .materia-bloco {
+      border: 1px solid #ddd;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      background: #f9fafb;
+    }
+    .avaliacoes div {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .botoes-top {
+      margin: 12px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+  </style>
+  <script>
+    let materiaCount = 0;
+
+    function addMateria() {
+      const container = document.getElementById("materias");
+      const div = document.createElement("div");
+      div.classList.add("materia-bloco");
+      div.innerHTML = `
+        <input type="text" name="materia_${materiaCount}" placeholder="Nome da matéria" required>
+        <div class="avaliacoes" id="avaliacoes_${materiaCount}">
+          <div>
+            <input type="text" name="tipo_${materiaCount}[]" placeholder="Tipo (Prova, Trabalho...)" required>
+            <input type="number" step="0.01" min="0" max="10" name="nota_${materiaCount}[]" placeholder="Nota (0-10)" required>
+          </div>
+        </div>
+        <button type="button" onclick="addAvaliacao(${materiaCount})">+ Avaliação</button>
+      `;
+      container.appendChild(div);
+      materiaCount++;
+    }
+
+    function addAvaliacao(materiaId) {
+      const avaliacoes = document.getElementById("avaliacoes_" + materiaId);
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <input type="text" name="tipo_${materiaId}[]" placeholder="Tipo (Prova, Trabalho...)" required>
+        <input type="number" step="0.01" min="0" max="10" name="nota_${materiaId}[]" placeholder="Nota (0-10)" required>
+      `;
+      avaliacoes.appendChild(div);
+    }
+  </script>
 </head>
 <body>
   <div class="page">
-    <h1>📘 Média Escolar</h1>
-
+    <h1>📘 Calcular Média Escolar</h1>
     <form method="post">
-      <div id="materias">
-        <div class="materia">
-          <input type="text" name="materias[]" placeholder="Matéria" required>
-          <input type="number" name="notas[]" step="0.01" min="0" max="10" placeholder="Nota" required>
-        </div>
+      <div id="materias"></div>
+      <div class="botoes-top">
+        <button type="button" onclick="addMateria()">+ Matéria</button>
+        <button type="submit">Calcular</button>
       </div>
-      <button type="button" onclick="addMateria()">➕ Adicionar Matéria</button>
-      <button type="submit">Calcular</button>
     </form>
 
     {% if resultado %}
       <div class="resultado">
-        <h3>Médias:</h3>
-        <ul>
-          {% for materia, media in resultado['materias'].items() %}
-            <li>{{ materia }}: {{ "%.2f"|format(media) }}</li>
-          {% endfor %}
-        </ul>
-        <p><b>Média Geral:</b> {{ "%.2f"|format(resultado['geral']) }}</p>
+        <h2>Resultados</h2>
+        {% for materia, dados in resultado.materias.items() %}
+          <h3>{{ materia }} → Média: {{ dados.media }}</h3>
+          <ul>
+            {% for tipo, nota in dados.avaliacoes.items() %}
+              <li>{{ tipo }}: {{ nota }}</li>
+            {% endfor %}
+          </ul>
+        {% endfor %}
+        <h2>📊 Média Geral: {{ resultado.geral }}</h2>
       </div>
     {% endif %}
-
-    <p><a href="{{ url_for('index') }}">Voltar</a></p>
   </div>
-
-  <script>
-    function addMateria() {
-      const div = document.createElement("div");
-      div.classList.add("materia");
-      div.innerHTML = `
-        <input type="text" name="materias[]" placeholder="Matéria" required>
-        <input type="number" name="notas[]" step="0.01" min="0" max="10" placeholder="Nota" required>
-      `;
-      document.getElementById("materias").appendChild(div);
-    }
-  </script>
+  <a href="{{ url_for('index') }}">⬅ Voltar</a>
 </body>
 </html>

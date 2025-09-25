@@ -110,16 +110,29 @@ def conversor_page():
 def media_page():
     resultado = None
     if request.method == "POST":
-        try:
-            notas = [
-                float(request.form.get("nota1", 0)),
-                float(request.form.get("nota2", 0)),
-                float(request.form.get("nota3", 0)),
-            ]
-            resultado = media_escolar.calcular_media(notas)
-        except ValueError:
-            flash("Notas inválidas.", "error")
+        materias_dict = {}
+        for key, value in request.form.items():
+            if key.startswith("materia_") and value.strip():
+                materia = value.strip()
+                idx = key.split("_")[1]
+                tipos = request.form.getlist(f"tipo_{idx}[]")
+                notas = request.form.getlist(f"nota_{idx}[]")
+                avaliacoes = {}
+                for t, n in zip(tipos, notas):
+                    try:
+                        n = float(n)
+                        if 0 <= n <= 10:
+                            avaliacoes[t] = n
+                    except ValueError:
+                        continue
+                if avaliacoes:
+                    materias_dict[materia] = avaliacoes
+
+        resultado = media_escolar.calcular_media(materias_dict)
+
     return render_template("media_escolar.html", resultado=resultado)
+
+
 
 # ==========================
 # Conversor de temperatura
