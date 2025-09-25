@@ -5,6 +5,7 @@
   <title>Média Escolar</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
+    /* Estilos específicos para a página de média escolar */
     .materia-bloco {
       border: 1px solid #ddd;
       padding: 12px;
@@ -22,6 +23,12 @@
       display: flex;
       gap: 10px;
       justify-content: center;
+      /* Aplica as regras para evitar o esticamento dos botões */
+    }
+    /* Regras adicionadas para os botões */
+    .botoes-top button {
+      flex-shrink: 0; /* Impede que o botão encolha */
+      width: auto; /* Garante que a largura seja automática */
     }
   </style>
   <script>

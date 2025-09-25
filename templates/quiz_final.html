@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Quiz de Programação - Fim</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>💻 Quiz de Programação - Fim</h1>
+    <div class="resultado">
+      <h2>{{ mensagem }}</h2>
+    </div>
+    <p><a href="{{ url_for('iniciar_quiz') }}">Começar outro Quiz</a></p>
+    <p><a href="{{ url_for('index') }}">Voltar para o Início</a></p>
+  </div>
+</body>
+</html>

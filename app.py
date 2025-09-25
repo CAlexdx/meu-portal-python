@@ -1,5 +1,5 @@
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, send_from_directory, flash
+from flask import Flask, render_template, request, send_from_directory, flash, session, redirect, url_for
 import os
 from PIL import Image, UnidentifiedImageError
 from uuid import uuid4
@@ -257,34 +257,82 @@ def editor_page():
     return render_template("editor_imagem.html", arquivo=arquivo)
 
 # ==========================
-# Quiz
+# QUIZ DE PROGRAMAÇÃO (Novas rotas)
 # ==========================
+@app.route("/iniciar_quiz")
+def iniciar_quiz():
+    quiz.inicializar_quiz(session) # PASSE 'session' AQUI
+    return redirect(url_for('quiz_page'))
+
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz_page():
-    pergunta = quiz.pegar_pergunta()
-    resultado = None
+    if 'perguntas_restantes_ids' not in session:
+        quiz.inicializar_quiz(session) # PASSE 'session' AQUI
+
     if request.method == "POST":
-        resposta = request.form.get("resposta")
-        correta = request.form.get("correta")
-        resultado = "✅ Resposta correta!" if resposta == correta else f"❌ Errado! O certo era: {correta}"
-    return render_template("quiz.html", pergunta=pergunta, resultado=resultado)
+        resposta_usuario = request.form.get('resposta')
+        resposta_correta = request.form.get('correta')
+        pergunta_id_respondida = int(request.form.get('pergunta_id'))
+
+        feedback = ""
+        if resposta_usuario == resposta_correta:
+            session['pontuacao'] += 1
+            feedback = "Correto! 🎉"
+        else:
+            feedback = f"Errado. A resposta correta era: {resposta_correta} 😔"
+
+        session['total_perguntas_respondidas'] += 1
+        if pergunta_id_respondida in session['perguntas_restantes_ids']:
+            session['perguntas_restantes_ids'].remove(pergunta_id_respondida)
+
+        session['ultimo_feedback'] = feedback
+
+    proxima_pergunta = quiz.pegar_proxima_pergunta(session) # PASSE 'session' AQUI
+
+    if proxima_pergunta:
+        feedback_para_exibir = session.pop('ultimo_feedback', None)
+        return render_template('quiz.html', pergunta=proxima_pergunta, resultado=feedback_para_exibir)
+    else:
+        pontuacao_final = session.get('pontuacao', 0)
+        total_respondidas = session.get('total_perguntas_respondidas', len(quiz.get_todas_perguntas()))
+        mensagem_final = f"Fim do Quiz! Sua pontuação final é: {pontuacao_final} de {total_respondidas} perguntas."
+        session.clear()
+        return render_template('quiz_final.html', mensagem=mensagem_final)
+
 
 # ==========================
 # Orçamento
 # ==========================
-@app.route("/orcamento", methods=["GET", "POST"])
+@app.route("/orcamento", methods=["GET", "POST"]) # Certifique-se que o import de 'orcamento' está correto
 def orcamento_page():
-    resumo, csv_file = None, None
+    resumo = None
+    erro = None
+    csv_file = None # Se for implementar a geração de CSV
+
     if request.method == "POST":
-        receitas = request.form.get("receitas", "")
-        despesas = request.form.get("despesas", "")
-        try:
-            resumo = orcamento.resumir(receitas, despesas)
-            caminho_csv = orcamento.gerar_csv(resumo, OUTPUTS)
-            csv_file = os.path.basename(caminho_csv)
-        except ValueError as e:
-            flash(str(e), "error")
-    return render_template("orcamento.html", resumo=resumo, csv_file=csv_file)
+        receitas_texto = request.form.get("receitas", "").strip()
+        despesas_texto = request.form.get("despesas", "").strip()
+
+        if not receitas_texto and not despesas_texto:
+            erro = "Por favor, digite algumas receitas ou despesas."
+        else:
+            try:
+                resumo = orcamento.resumir(receitas_texto, despesas_texto)
+                # Exemplo de como você poderia gerar um CSV (se o orcamento.py tiver a função)
+                # csv_file = orcamento.gerar_csv(resumo, OUTPUTS)
+            except ValueError as e:
+                erro = str(e)
+            except Exception as e:
+                erro = f"Ocorreu um erro inesperado: {e}"
+
+    return render_template("orcamento.html", resumo=resumo, erro=erro, csv_file=csv_file)
+
+# Exemplo de rota para download de arquivos (se você gerar CSVs)
+@app.route("/downloads/<filename>")
+def download_file(filename):
+    return send_from_directory(OUTPUTS, filename, as_attachment=True)
+
+
 
 # ==========================
 # Calculadora

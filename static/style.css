@@ -9,7 +9,7 @@
     --radius: 10px;
     --gap: 14px;
   }
-  
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
@@ -17,7 +17,7 @@
     color: var(--title);
     padding: 20px;
   }
-  
+
   /* ================================
      🔝 CABEÇALHO
      ================================ */
@@ -29,7 +29,7 @@
     font-size: 28px;
     font-weight: 700;
   }
-  
+
   /* ================================
      🧭 MENU HORIZONTAL
      ================================ */
@@ -55,7 +55,7 @@
       background: var(--accent);
       color: #fff;
     }
-    
+
     /* Ajuste responsivo */
     @media (max-width: 1024px) {
       .menu-horizontal { grid-template-columns: repeat(3, 1fr); }
@@ -77,30 +77,30 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     text-align: center;
   }
-  
+
   .page h1 {
     margin-bottom: 20px;
     font-size: 24px;
   }
-  
-  .page form {
+
+  .page form { /* This style for general forms in .page should be kept */
     margin: 20px 0;
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
   }
-  
-  .page input, 
-  .page select, 
-  .page button, 
+
+  .page input,
+  .page select,
+  .page button,
   .page textarea {
     padding: 10px 14px;
     font-size: 16px;
     border-radius: 6px;
     border: 1px solid #ccc;
   }
-  
+
   .page button {
     background: var(--accent);
     color: #fff;
@@ -111,7 +111,33 @@
   .page button:hover {
     background: #1d4ed8;
   }
-  
+
+  /* Estilos específicos para a página de média escolar (integrados aqui) */
+  .materia-bloco {
+    border: 1px solid #ddd;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: #f9fafb;
+  }
+  .avaliacoes div {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .botoes-top { /* This is the key change for your specific buttons */
+    margin: 12px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;   /* Prevent buttons from stretching vertically */
+  }
+  .botoes-top button {
+    flex-shrink: 0; /* Impede que o botão encolha */
+    width: auto; /* Garante que a largura seja automática */
+  }
+
+
   /* Resultados */
   .resultado, .page pre {
     margin-top: 20px;
@@ -121,7 +147,7 @@
     font-size: 17px;
     text-align: center;
   }
-  
+
   /* Links */
   .page a {
     margin-top: 20px;
@@ -130,7 +156,7 @@
     text-decoration: none;
   }
   .page a:hover { text-decoration: underline; }
-  
+
   /* ================================
      🎯 QUIZ
      ================================ */
@@ -139,14 +165,14 @@
     flex-direction: column;
     gap: 14px;
   }
-  
+
   .quiz-opcoes {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
     justify-content: center;
   }
-  
+
   .quiz-opcoes label {
     padding: 8px 14px;
     border: 1px solid #ddd;
@@ -161,7 +187,7 @@
   .quiz-opcoes label:hover {
     background: #eef2ff;
   }
-  
+
   /* ================================
      📱 RESPONSIVIDADE
      ================================ */

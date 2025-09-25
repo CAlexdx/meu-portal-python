@@ -9,6 +9,18 @@
   <div class="page">
     <h1>💻 Quiz de Programação</h1>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if resultado %} {# Este é o feedback de "Certo!" ou "Errado!" #}
+      <div class="resultado">{{ resultado }}</div>
+    {% endif %}
+
     <form method="post" class="quiz-form">
       <p class="pergunta"><b>{{ pergunta['pergunta'] }}</b></p>
       <div class="quiz-opcoes">
@@ -19,14 +31,12 @@
         {% endfor %}
       </div>
       <input type="hidden" name="correta" value="{{ pergunta['resposta'] }}">
-      <button type="submit">Responder</button>
+      <input type="hidden" name="pergunta_id" value="{{ pergunta['id'] }}">
+      <button type="submit">Responder e Próxima</button>
     </form>
 
-    {% if resultado %}
-      <div class="resultado">{{ resultado }}</div>
-    {% endif %}
-
-    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+    <p><a href="{{ url_for('iniciar_quiz') }}">Reiniciar Quiz</a></p> {# Link para reiniciar o quiz #}
+    <p><a href="{{ url_for('index') }}">Voltar para o Início</a></p>
   </div>
 </body>
 </html>
