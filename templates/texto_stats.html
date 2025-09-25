@@ -7,18 +7,20 @@
 </head>
 <body>
   <div class="page">
-    <h1>📊 Estatísticas de Texto</h1>
+    <h1>📝 Estatísticas de Texto</h1>
     <form method="post">
-      <textarea name="texto" rows="5" cols="40" placeholder="Digite seu texto aqui"></textarea>
+      <textarea name="texto" rows="6" cols="40" placeholder="Digite um texto aqui..." required></textarea>
       <button type="submit">Analisar</button>
     </form>
+
     {% if resultado %}
       <div class="resultado">
-        <p>Palavras: {{ resultado.palavras }}</p>
-        <p>Caracteres: {{ resultado.caracteres }}</p>
-        <p>Frases: {{ resultado.frases }}</p>
+        <p><b>Caracteres:</b> {{ resultado.caracteres }}</p>
+        <p><b>Palavras:</b> {{ resultado.palavras }}</p>
+        <p><b>Linhas:</b> {{ resultado.linhas }}</p>
       </div>
     {% endif %}
+
     <p><a href="{{ url_for('index') }}">Voltar</a></p>
   </div>
 </body>

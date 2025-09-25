@@ -2,33 +2,28 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Tradutor Simples</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tradutor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="page">
-    <h1>🔤 Tradutor Simples</h1>
-
+    <h1>🌐 Tradutor Simples</h1>
     <form method="post">
-      <textarea name="texto" rows="4" placeholder="Digite o texto em Português" required></textarea>
+      <textarea name="texto" rows="4" cols="40" placeholder="Digite um texto em português..." required></textarea>
       <select name="target">
-        <option value="en">Inglês (en)</option>
-        <option value="es">Espanhol (es)</option>
-        <option value="fr">Francês (fr)</option>
-        <option value="de">Alemão (de)</option>
+        <option value="en">Inglês</option>
+        <option value="es">Espanhol</option>
+        <option value="fr">Francês</option>
+        <option value="de">Alemão</option>
       </select>
       <button type="submit">Traduzir</button>
     </form>
 
     {% if traducao %}
-      <div class="resultado">
-        <p><strong>Tradução:</strong></p>
-        <p>{{ traducao }}</p>
-      </div>
+      <div class="resultado"><b>Tradução:</b> {{ traducao }}</div>
     {% endif %}
     {% if erro %}
-      <div class="resultado" style="color:red;">{{ erro }}</div>
+      <div class="alerta error">{{ erro }}</div>
     {% endif %}
 
     <p><a href="{{ url_for('index') }}">Voltar</a></p>
