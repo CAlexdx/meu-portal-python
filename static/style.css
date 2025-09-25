@@ -1,197 +1,166 @@
 /* ================================
-   🎨 PORTAL PYTHON - ESTILO GLOBAL
+   🌐 PORTAL PYTHON - ESTILO GERAL
    ================================ */
 
-/* Paleta e variáveis */
-:root {
-  --bg: #f6f7fb;
-  --card-bg: #ffffff;
-  --border: #eceff3;
-  --title: #324358;
-  --muted: #7b8794;
-  --accent: #3b82f6;
-  --radius: 12px;
-  --gap: 18px;
-  --shadow: 0 6px 20px rgba(34,41,47,0.06);
-}
-
-/* Reset simples */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--title);
-  -webkit-font-smoothing: antialiased;
-  padding: 20px;
-  line-height: 1.5;
-}
-
-/* ================================
-   📌 CABEÇALHO
-   ================================ */
-header {
-  margin-bottom: 20px;
-  text-align: center;
-}
-header h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--title);
-}
-
-/* ================================
-   📌 MENU PRINCIPAL
-   ================================ */
-.menu {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--gap);
-  margin-top: 20px;
-}
-
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  color: inherit;
-  transition: transform .15s ease, box-shadow .15s ease;
-  font-size: 18px;
-}
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 14px 30px rgba(34,41,47,0.12);
-}
-
-/* ================================
-   📌 CONTEÚDO DAS PÁGINAS
-   ================================ */
-.page {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 24px;
-  background: #fff;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  text-align: center;
-}
-.page h1 {
-  font-size: 26px;
-  margin-bottom: 20px;
-}
-
-/* Formulários */
-.page form {
-  margin: 20px 0;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.page input,
-.page select,
-.page textarea,
-.page button {
-  padding: 12px 16px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #d0d7de;
-}
-.page textarea {
-  resize: vertical;
-}
-.page button {
-  background: var(--accent);
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.page button:hover {
-  background: #2563eb;
-}
-
-/* Resultados e mensagens */
-.resultado, .page pre {
-  margin-top: 20px;
-  padding: 16px;
-  background: #f9fafb;
-  border-radius: 8px;
-  font-size: 18px;
-  text-align: center;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-}
-.alerta {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 15px;
-}
-.alerta.error { background: #fee2e2; color: #b91c1c; }
-.alerta.success { background: #dcfce7; color: #166534; }
-
-/* Links */
-.page a {
-  display: inline-block;
-  margin-top: 20px;
-  color: var(--accent);
-  font-weight: 500;
-  text-decoration: none;
-}
-.page a:hover { text-decoration: underline; }
-
-/* ================================
-   📌 FORMULÁRIOS ESPECIAIS
-   ================================ */
-.quiz-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
-  margin-top: 20px;
-}
-.quiz-form label {
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.orcamento-form .campos {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-.orcamento-form textarea {
-  width: 260px;
-  padding: 10px;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
-  font-size: 15px;
-}
-
-/* ================================
-   📱 RESPONSIVIDADE
-   ================================ */
-@media (max-width: 768px) {
-  .page {
-    margin: 20px 10px;
+   :root {
+    --bg: #f6f7fb;
+    --title: #222;
+    --accent: #2563eb;
+    --radius: 10px;
+    --gap: 14px;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--title);
     padding: 20px;
   }
-  .page h1 { font-size: 22px; }
+  
+  /* ================================
+     🔝 CABEÇALHO
+     ================================ */
+  header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  header h1 {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  /* ================================
+     🧭 MENU HORIZONTAL
+     ================================ */
+  .menu-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap);
+    margin: 20px auto;
+  }
+  
+  .menu-horizontal a {
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    border: 1px solid #ddd;
+    background: #fff;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+  }
+  .menu-horizontal a:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  
+  /* ================================
+     📄 PÁGINAS INTERNAS
+     ================================ */
+  .page {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+  
+  .page h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .page form {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
   .page input, 
   .page select, 
-  .page button,
+  .page button, 
   .page textarea {
-    width: 100%;
-    max-width: 100%;
-    font-size: 15px;
+    padding: 10px 14px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
   }
-  .resultado { font-size: 16px; }
-  .card { font-size: 16px; padding: 16px; }
-}
+  
+  .page button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .page button:hover {
+    background: #1d4ed8;
+  }
+  
+  /* Resultados */
+  .resultado, .page pre {
+    margin-top: 20px;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 6px;
+    font-size: 17px;
+    text-align: center;
+  }
+  
+  /* Links */
+  .page a {
+    margin-top: 20px;
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .page a:hover { text-decoration: underline; }
+  
+  /* ================================
+     🎯 QUIZ
+     ================================ */
+  .quiz-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .quiz-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+  
+  .quiz-opcoes label {
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    cursor: pointer;
+    background: #f9fafb;
+    transition: 0.2s;
+  }
+  .quiz-opcoes input {
+    margin-right: 6px;
+  }
+  .quiz-opcoes label:hover {
+    background: #eef2ff;
+  }
+  
+  /* ================================
+     📱 RESPONSIVIDADE
+     ================================ */
+  @media (max-width: 600px) {
+    header h1 { font-size: 22px; }
+    .menu-horizontal { flex-direction: column; }
+    .menu-horizontal a { text-align: center; }
+    .page { padding: 15px; }
+    .quiz-opcoes { flex-direction: column; align-items: stretch; }
+  }
+  

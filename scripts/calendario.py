@@ -1,24 +1,32 @@
-import locale
 import calendar
 import holidays
 
-def configurar_locale():
-    try:
-        locale.setlocale(locale.LC_TIME, "pt_BR.utf8")
-    except locale.Error:
-        try:
-            locale.setlocale(locale.LC_TIME, "pt_BR")  # tenta outra variação
-        except locale.Error:
-            locale.setlocale(locale.LC_TIME, "")  # usa o default do sistema
+MESES_PT = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+]
 
-configurar_locale()
+DIAS_PT = ["Do", "Se", "Te", "Qa", "Qi", "Se", "Sa"]
 
 def gerar_calendario(ano=2025, mes=9):
-    cal = calendar.TextCalendar(calendar.SUNDAY)
-    texto = cal.formatmonth(ano, mes)
+    cal = calendar.Calendar(firstweekday=6)
+    semanas = cal.monthdayscalendar(ano, mes)
 
-    # Marca feriados
-    feriados = holidays.country_holidays("BR", years=ano)
-    feriados_mes = {d.day: nome for d, nome in feriados.items() if d.month == mes}
+    # Monta texto
+    texto = f"{MESES_PT[mes-1]} {ano}\n"
+    texto += " ".join(DIAS_PT) + "\n"
+    for semana in semanas:
+        linha = " ".join(f"{d:2}" if d != 0 else "  " for d in semana)
+        texto += linha + "\n"
 
-    return texto, feriados_mes
+    # Feriados
+    feriados = {}
+    try:
+        br_holidays = holidays.Brazil(years=ano)
+        for dia, nome in br_holidays.items():
+            if dia.month == mes:
+                feriados[dia.day] = nome
+    except Exception:
+        feriados = {}
+
+    return texto, feriados

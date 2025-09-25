@@ -8,21 +8,43 @@
 <body>
   <div class="page">
     <h1>📘 Média Escolar</h1>
+
     <form method="post">
-      <input type="number" name="nota1" step="0.01" min="0" max="10" required>
-      <input type="number" name="nota2" step="0.01" min="0" max="10" required>
-      <input type="number" name="nota3" step="0.01" min="0" max="10" required>
+      <div id="materias">
+        <div class="materia">
+          <input type="text" name="materias[]" placeholder="Matéria" required>
+          <input type="number" name="notas[]" step="0.01" min="0" max="10" placeholder="Nota" required>
+        </div>
+      </div>
+      <button type="button" onclick="addMateria()">➕ Adicionar Matéria</button>
       <button type="submit">Calcular</button>
     </form>
 
-    {% if resultado is not none %}
-      <div class="resultado">Média: {{ resultado }}</div>
+    {% if resultado %}
+      <div class="resultado">
+        <h3>Médias:</h3>
+        <ul>
+          {% for materia, media in resultado['materias'].items() %}
+            <li>{{ materia }}: {{ "%.2f"|format(media) }}</li>
+          {% endfor %}
+        </ul>
+        <p><b>Média Geral:</b> {{ "%.2f"|format(resultado['geral']) }}</p>
+      </div>
     {% endif %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alerta {{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% e
+    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+  </div>
+
+  <script>
+    function addMateria() {
+      const div = document.createElement("div");
+      div.classList.add("materia");
+      div.innerHTML = `
+        <input type="text" name="materias[]" placeholder="Matéria" required>
+        <input type="number" name="notas[]" step="0.01" min="0" max="10" placeholder="Nota" required>
+      `;
+      document.getElementById("materias").appendChild(div);
+    }
+  </script>
+</body>
+</html>
