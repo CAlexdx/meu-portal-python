@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Calculadora de Juros Compostos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>💰 Calculadora de Juros Compostos</h1>
+
+    <form method="post">
+      <input type="number" name="capital_inicial" step="0.01" min="0" placeholder="Capital Inicial (R$)" required>
+      <input type="number" name="taxa_juros_anual" step="0.01" min="0" placeholder="Taxa de Juros Anual (%)" required>
+      <input type="number" name="tempo_meses" step="1" min="0" placeholder="Tempo (meses)" required>
+      <button type="submit">Calcular</button>
+    </form>
+
+    {% if resultado %}
+      <div class="resultado">Montante Final: {{ resultado }}</div>
+    {% endif %}
+    {% if erro %}
+      <div class="resultado" style="color:red;">{{ erro }}</div>
+    {% endif %}
+
+  </div>
+</body>
+</html>

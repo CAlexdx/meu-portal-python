@@ -14,21 +14,30 @@
         <option value="bw">Preto e Branco</option>
         <option value="invert">Inverter Cores</option>
         <option value="blur">Borrar</option>
+        <option value="sharpen">Nitidez</option> {# Novo filtro #}
+        <option value="emboss">Relevo</option> {# Novo filtro #}
+        <option value="contour">Contorno</option> {# Novo filtro #}
+        <option value="sepia">Sépia</option> {# Novo filtro #}
+        <option value="brightness_boost">Aumentar Brilho</option> {# Novo filtro #}
+        <option value="contrast_boost">Aumentar Contraste</option> {# Novo filtro #}
       </select>
       <button type="submit">Aplicar Filtro</button>
     </form>
     
-    {% if erro %}
-      <p style="color: red;">{{ erro }}</p> {# Exibe a mensagem de erro #}
-    {% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     {% if arquivo %}
       <div class="resultado">
         <p>Imagem processada:</p>
-        <img src="{{ url_for('arquivos', filename=arquivo) }}" alt="Imagem editada">
+        <img src="{{ url_for('static', filename='outputs/' + arquivo) }}" alt="Imagem editada"> {# Corrected path #}
       </div>
     {% endif %}
-    <p><a href="{{ url_for('index') }}">Voltar</a></p>
   </div>
 </body>
 </html>

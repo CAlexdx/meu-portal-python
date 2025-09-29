@@ -2,13 +2,15 @@ from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, send_from_directory, flash, session, redirect, url_for
 import os
 from PIL import Image, UnidentifiedImageError
+from scripts.tradutor import traduzir
 from uuid import uuid4
+import scripts.editor_imagem as editor_imagem
 
 # Imports dos módulos (ajuste conforme seus scripts disponíveis)
 from scripts import (
     calendario, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
-    editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador
+    editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos
 )
 
 app = Flask(__name__)
@@ -354,19 +356,18 @@ def calculadora_page():
 # ==========================
 # Tradutor
 # ==========================
-@app.route("/tradutor", methods=["GET", "POST"])
+@app.route('/tradutor', methods=['GET', 'POST'])
 def tradutor_page():
-    traducao, erro = None, None
-    if request.method == "POST":
-        texto = request.form.get("texto", "")
-        target = request.form.get("target", "en")
-        traduzido = tradutor.traduzir(texto, source="pt", target=target)
-        if traduzido:
-            traducao = traduzido
-        else:
-            erro = "Não foi possível traduzir no momento."
-    return render_template("tradutor.html", traducao=traducao, erro=erro)
-
+    traducao = None
+    erro = None
+    if request.method == 'POST':
+        texto = request.form['texto']
+        target_lang = request.form['target']
+        
+        # Chama a função traduzir, que agora retorna (resultado, erro)
+        traducao, erro = traduzir(texto, target=target_lang)
+        
+    return render_template('tradutor.html', traducao=traducao, erro=erro)
 # ==========================
 # Encurtador de links
 # ==========================
@@ -379,6 +380,32 @@ def encurtador_page():
         if not short:
             erro = "Falha ao encurtar. Verifique o link."
     return render_template("encurtador.html", short=short, erro=erro)
+
+# ==========================
+# Juros Compostos
+# ==========================
+@app.route("/juros-compostos", methods=["GET", "POST"])
+def juros_compostos_page():
+    resultado = None
+    erro = None
+    if request.method == "POST":
+        try:
+            capital_inicial = float(request.form.get("capital_inicial", 0))
+            taxa_anual = float(request.form.get("taxa_anual", 0)) / 100 # Converte % para decimal
+            tempo_meses = int(request.form.get("tempo_meses", 0))
+
+            montante, err = juros_compostos.calcular_juros_compostos(capital_inicial, taxa_anual, tempo_meses)
+            if err:
+                flash(err, "error")
+            else:
+                resultado = f"Montante Final: R$ {montante:,.2f}"
+        except ValueError:
+            flash("Valores inválidos. Certifique-se de que são números.", "error")
+        except Exception as e:
+            flash(f"Ocorreu um erro: {e}", "error")
+    return render_template("juros_compostos.html", resultado=resultado)
+
+
 
 # ==========================
 # Outputs
