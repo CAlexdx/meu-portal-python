@@ -2,12 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>QR Code</title>
+  <title>Gerador de QR Code</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="page">
     <h1>🔲 Gerador de QR Code</h1>
+
     <form method="post">
       <input type="text" name="texto" maxlength="300" placeholder="Digite um texto ou link" required>
       <button type="submit">Gerar</button>
@@ -19,7 +20,7 @@
       </div>
     {% endif %}
 
-    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
 </body>
 </html>

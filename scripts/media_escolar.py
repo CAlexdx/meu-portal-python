@@ -1,9 +1,24 @@
+# scripts/media_escolar.py
+
 def calcular_media(materias_dict):
     """
-    materias_dict = {
-        "Matemática": {"Prova": 7.5, "Trabalho": 8.0},
-        "Português": {"Prova": 6.0, "Redação": 7.0}
-    }
+    Calcula a média de cada matéria e a média geral.
+    
+    Args:
+        materias_dict (dict): Estrutura de matérias e avaliações, exemplo:
+            {
+                "Matemática": {"Prova": 7.5, "Trabalho": 8.0},
+                "Português": {"Prova": 6.0, "Redação": 7.0}
+            }
+
+    Returns:
+        dict: {
+            "materias": {
+                "Matemática": {"avaliacoes": {...}, "media": 7.75},
+                "Português": {"avaliacoes": {...}, "media": 6.5}
+            },
+            "geral": 7.12
+        }
     """
     resultado = {}
     todas_notas = []

@@ -1,33 +1,38 @@
-from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, send_from_directory, flash, session, redirect, url_for
 import os
-from PIL import Image, UnidentifiedImageError
-from scripts.tradutor import traduzir
+import io
+import base64
 from uuid import uuid4
-import scripts.editor_imagem as editor_imagem
 
-# Imports dos módulos (ajuste conforme seus scripts disponíveis)
+from flask import Flask, render_template, jsonify, request, send_from_directory, flash, session, redirect, url_for
+from werkzeug.utils import secure_filename
+from PIL import Image, UnidentifiedImageError
+
+# Imports dos módulos
 from scripts import (
     calendario, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
     editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos
 )
+from scripts.tradutor import traduzir
 
+# Configuração básica
 app = Flask(__name__)
 app.secret_key = "segredo"
 OUTPUTS = "outputs"
 os.makedirs(OUTPUTS, exist_ok=True)
 
-# Lista de extensões permitidas para o editor de imagens
+# Extensões permitidas para upload de imagens
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 # ==========================
 # Calendário
@@ -48,6 +53,7 @@ def calendario_page():
     resultado, feriados = calendario.gerar_calendario(ano, mes)
     return render_template("calendario.html", resultado=resultado, feriados=feriados, ano=ano, mes=mes)
 
+
 # ==========================
 # QR Code
 # ==========================
@@ -66,6 +72,7 @@ def qrcode_page():
                 flash(f"Erro ao gerar QR Code: {e}", "error")
     return render_template("qrcode.html", arquivo=arquivo)
 
+
 # ==========================
 # YouTube Downloader
 # ==========================
@@ -74,7 +81,7 @@ def youtube_page():
     arquivo = None
     erro = None
     if os.environ.get("RENDER") == "true":
-        erro = "⚠️ Este recurso só funciona na versão local do portal."
+        erro = "Este recurso só funciona na versão local do portal."
     elif request.method == "POST":
         link = request.form.get("link", "").strip()
         if not link.startswith("http"):
@@ -85,6 +92,7 @@ def youtube_page():
             except Exception:
                 erro = "Erro ao baixar o vídeo (restrição ou serviço indisponível)."
     return render_template("youtube.html", arquivo=arquivo, erro=erro)
+
 
 # ==========================
 # Conversor de moedas
@@ -104,6 +112,7 @@ def conversor_page():
         except ValueError:
             erro = "Valor inválido."
     return render_template("conversor.html", resultado=resultado, erro=erro, valor=valor, de=de, para=para)
+
 
 # ==========================
 # Média Escolar
@@ -134,10 +143,8 @@ def media_page():
 
     return render_template("media_escolar.html", resultado=resultado)
 
-
-
 # ==========================
-# Conversor de temperatura
+# Conversor de Temperatura
 # ==========================
 @app.route("/temperatura", methods=["GET", "POST"])
 def temperatura_page():
@@ -152,6 +159,7 @@ def temperatura_page():
         except ValueError:
             flash("Valor inválido.", "error")
     return render_template("conversor_temperatura.html", resultado=resultado)
+
 
 # ==========================
 # Gerador de Senhas
@@ -170,8 +178,9 @@ def senhas_page():
             flash("Entrada inválida.", "error")
     return render_template("senhas.html", senha=senha)
 
+
 # ==========================
-# Sorteio simples
+# Sorteio Simples
 # ==========================
 @app.route("/sorteio", methods=["GET", "POST"])
 def sorteio_page():
@@ -183,8 +192,9 @@ def sorteio_page():
             flash(err, "error")
     return render_template("sorteio.html", resultado=resultado)
 
+
 # ==========================
-# Sorteio de equipes
+# Sorteio de Equipes
 # ==========================
 @app.route("/equipes", methods=["GET", "POST"])
 def equipes_page():
@@ -198,8 +208,9 @@ def equipes_page():
             erro = "Número de equipes inválido."
     return render_template("equipes.html", equipes=equipes, erro=erro)
 
+
 # ==========================
-# Texto Stats
+# Analisador de Texto
 # ==========================
 @app.route("/texto", methods=["GET", "POST"])
 def texto_page():
@@ -210,6 +221,7 @@ def texto_page():
         if err:
             flash(err, "error")
     return render_template("texto_stats.html", resultado=resultado)
+
 
 # ==========================
 # IMC
@@ -230,46 +242,55 @@ def imc_page():
 # ==========================
 # Editor de Imagens
 # ==========================
-@app.route("/editor", methods=["GET", "POST"])
+@app.route("/editor")
 def editor_page():
-    arquivo = None
-    if request.method == "POST":
-        if "imagem" not in request.files:
-            flash("Nenhum arquivo enviado.", "error")
-        else:
-            imagem = request.files["imagem"]
-            if imagem.filename == "":
-                flash("Nenhum arquivo selecionado.", "error")
-            elif not allowed_file(imagem.filename):
-                flash("Extensão não permitida.", "error")
-            else:
-                try:
-                    nome_seguro = f"{uuid4().hex}_{secure_filename(imagem.filename)}"
-                    caminho_temp = os.path.join(OUTPUTS, nome_seguro)
-                    imagem.save(caminho_temp)
-                    Image.open(caminho_temp).verify()
-                    filtro = request.form.get("filtro", "bw")
-                    arquivo_processado_path = editor_imagem.aplicar_filtro(caminho_temp, filtro, OUTPUTS)
-                    arquivo = os.path.basename(arquivo_processado_path)
-                    flash("Filtro aplicado com sucesso!", "success")
-                except UnidentifiedImageError:
-                    flash("Arquivo inválido ou corrompido.", "error")
-                    if os.path.exists(caminho_temp):
-                        os.remove(caminho_temp)
-    return render_template("editor_imagem.html", arquivo=arquivo)
+    return render_template("editor_imagem.html")
+
+@app.route("/processar_editor_imagem", methods=["POST"])
+def processar_editor_imagem():
+    if "imagem" not in request.files:
+        return jsonify(success=False, message="Nenhum arquivo enviado."), 400
+
+    imagem_file = request.files["imagem"]
+    if imagem_file.filename == "":
+        return jsonify(success=False, message="Nenhum arquivo selecionado."), 400
+    
+    if not allowed_file(imagem_file.filename):
+        return jsonify(success=False, message="Extensão de arquivo não permitida."), 400
+
+    try:
+        img = Image.open(imagem_file.stream)
+        filtro = request.form.get("filtro", "bw")
+
+        processed_img = editor_imagem.aplicar_filtro(img, filtro)
+
+        img_byte_arr = io.BytesIO()
+        processed_img.save(img_byte_arr, format='JPEG') 
+        img_byte_arr = img_byte_arr.getvalue()
+
+        encoded_image = base64.b64encode(img_byte_arr).decode('ascii')
+
+        return jsonify(success=True, message="Filtro aplicado com sucesso!", processed_image_base64=encoded_image)
+
+    except UnidentifiedImageError:
+        return jsonify(success=False, message="Arquivo de imagem inválido ou corrompido."), 400
+    except Exception as e:
+        app.logger.error(f"Erro ao processar imagem no editor: {e}")
+        return jsonify(success=False, message=f"Erro interno ao processar imagem: {str(e)}"), 500
+
 
 # ==========================
-# QUIZ DE PROGRAMAÇÃO (Novas rotas)
+# Quiz de Programação
 # ==========================
 @app.route("/iniciar_quiz")
 def iniciar_quiz():
-    quiz.inicializar_quiz(session) # PASSE 'session' AQUI
+    quiz.inicializar_quiz(session)
     return redirect(url_for('quiz_page'))
 
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz_page():
     if 'perguntas_restantes_ids' not in session:
-        quiz.inicializar_quiz(session) # PASSE 'session' AQUI
+        quiz.inicializar_quiz(session)
 
     if request.method == "POST":
         resposta_usuario = request.form.get('resposta')
@@ -289,7 +310,7 @@ def quiz_page():
 
         session['ultimo_feedback'] = feedback
 
-    proxima_pergunta = quiz.pegar_proxima_pergunta(session) # PASSE 'session' AQUI
+    proxima_pergunta = quiz.pegar_proxima_pergunta(session)
 
     if proxima_pergunta:
         feedback_para_exibir = session.pop('ultimo_feedback', None)
@@ -305,12 +326,9 @@ def quiz_page():
 # ==========================
 # Orçamento
 # ==========================
-@app.route("/orcamento", methods=["GET", "POST"]) # Certifique-se que o import de 'orcamento' está correto
+@app.route("/orcamento", methods=["GET", "POST"])
 def orcamento_page():
-    resumo = None
-    erro = None
-    csv_file = None # Se for implementar a geração de CSV
-
+    resumo, erro, csv_file = None, None, None
     if request.method == "POST":
         receitas_texto = request.form.get("receitas", "").strip()
         despesas_texto = request.form.get("despesas", "").strip()
@@ -320,8 +338,7 @@ def orcamento_page():
         else:
             try:
                 resumo = orcamento.resumir(receitas_texto, despesas_texto)
-                # Exemplo de como você poderia gerar um CSV (se o orcamento.py tiver a função)
-                # csv_file = orcamento.gerar_csv(resumo, OUTPUTS)
+                # Caso queira gerar CSV: csv_file = orcamento.gerar_csv(resumo, OUTPUTS)
             except ValueError as e:
                 erro = str(e)
             except Exception as e:
@@ -329,11 +346,9 @@ def orcamento_page():
 
     return render_template("orcamento.html", resumo=resumo, erro=erro, csv_file=csv_file)
 
-# Exemplo de rota para download de arquivos (se você gerar CSVs)
 @app.route("/downloads/<filename>")
 def download_file(filename):
     return send_from_directory(OUTPUTS, filename, as_attachment=True)
-
 
 
 # ==========================
@@ -353,23 +368,34 @@ def calculadora_page():
             resultado = round(res, 6) if isinstance(res, (int, float)) else res
     return render_template("calculadora.html", resultado=resultado, erro=erro)
 
+
 # ==========================
 # Tradutor
 # ==========================
-@app.route('/tradutor', methods=['GET', 'POST'])
+@app.route("/tradutor", methods=["GET", "POST"])
 def tradutor_page():
-    traducao = None
-    erro = None
-    if request.method == 'POST':
-        texto = request.form['texto']
-        target_lang = request.form['target']
+    traducao, erro = None, None
+    texto_original = ""
+    target_lang_selected = "en"
+
+    if request.method == "POST":
+        texto_original = request.form.get("texto", "").strip()
+        target_lang_selected = request.form.get("target", "en")
         
-        # Chama a função traduzir, que agora retorna (resultado, erro)
-        traducao, erro = traduzir(texto, target=target_lang)
-        
-    return render_template('tradutor.html', traducao=traducao, erro=erro)
+        if not texto_original:
+            erro = "Por favor, digite um texto para traduzir."
+        else:
+            traducao, erro = traduzir(texto_original, target=target_lang_selected)
+            
+    return render_template("tradutor.html", 
+                           traducao=traducao, 
+                           erro=erro, 
+                           texto_original=texto_original,
+                           target_lang_selected=target_lang_selected)
+
+
 # ==========================
-# Encurtador de links
+# Encurtador de Links
 # ==========================
 @app.route("/encurtador", methods=["GET", "POST"])
 def encurtador_page():
@@ -381,17 +407,17 @@ def encurtador_page():
             erro = "Falha ao encurtar. Verifique o link."
     return render_template("encurtador.html", short=short, erro=erro)
 
+
 # ==========================
 # Juros Compostos
 # ==========================
 @app.route("/juros-compostos", methods=["GET", "POST"])
 def juros_compostos_page():
-    resultado = None
-    erro = None
+    resultado, erro = None, None
     if request.method == "POST":
         try:
             capital_inicial = float(request.form.get("capital_inicial", 0))
-            taxa_anual = float(request.form.get("taxa_anual", 0)) / 100 # Converte % para decimal
+            taxa_anual = float(request.form.get("taxa_anual", 0)) / 100
             tempo_meses = int(request.form.get("tempo_meses", 0))
 
             montante, err = juros_compostos.calcular_juros_compostos(capital_inicial, taxa_anual, tempo_meses)
@@ -406,7 +432,6 @@ def juros_compostos_page():
     return render_template("juros_compostos.html", resultado=resultado)
 
 
-
 # ==========================
 # Outputs
 # ==========================
@@ -414,5 +439,9 @@ def juros_compostos_page():
 def arquivos(filename):
     return send_from_directory(OUTPUTS, filename)
 
+
+# ==========================
+# Inicialização
+# ==========================
 if __name__ == "__main__":
     app.run(debug=True)

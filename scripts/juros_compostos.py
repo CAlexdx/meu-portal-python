@@ -5,21 +5,26 @@ def calcular_juros_compostos(capital_inicial, taxa_juros, tempo_meses):
     Calcula o montante final em um investimento com juros compostos.
 
     Args:
-        capital_inicial (float): O valor principal inicial.
-        taxa_juros (float): A taxa de juros anual em formato decimal (e.g., 0.05 para 5%).
-                            Será convertida para taxa mensal.
-        tempo_meses (int): O tempo do investimento em meses.
+        capital_inicial (float): Valor inicial investido.
+        taxa_juros (float): Taxa de juros anual em formato decimal (ex: 0.05 para 5%).
+        tempo_meses (int): Duração do investimento em meses.
 
     Returns:
-        float: O montante final após o período.
+        tuple: (montante_final, erro) → Se erro, retorna (None, mensagem).
     """
+    try:
+        capital_inicial = float(capital_inicial)
+        taxa_juros = float(taxa_juros)
+        tempo_meses = int(tempo_meses)
+    except Exception:
+        return None, "Valores inválidos. Verifique os campos."
+
     if capital_inicial <= 0 or taxa_juros < 0 or tempo_meses < 0:
         return None, "Valores devem ser positivos. A taxa de juros pode ser zero."
 
-    # Converte a taxa de juros anual para mensal
-    taxa_juros_mensal = (1 + taxa_juros)**(1/12) - 1
+    # Converte taxa anual para mensal
+    taxa_juros_mensal = (1 + taxa_juros) ** (1/12) - 1
 
-    # Fórmula dos juros compostos: M = C * (1 + i)^t
-    montante_final = capital_inicial * (1 + taxa_juros_mensal)**tempo_meses
-    return montante_final, None
-
+    # Fórmula dos juros compostos
+    montante_final = capital_inicial * (1 + taxa_juros_mensal) ** tempo_meses
+    return round(montante_final, 2), None

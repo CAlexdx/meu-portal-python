@@ -8,21 +8,23 @@
 <body>
   <div class="page">
     <h1>🔗 Encurtador de Links</h1>
+
     <form method="post">
       <input type="url" name="link" placeholder="Cole seu link aqui" required>
       <button type="submit">Encurtar</button>
     </form>
 
     {% if short %}
-      <div class="resultado">
-        <p><b>Link Encurtado:</b> <a href="{{ short }}" target="_blank">{{ short }}</a></p>
+      <div class="resultado message success">
+        <p><b>Link encurtado:</b> <a href="{{ short }}" target="_blank">{{ short }}</a></p>
       </div>
     {% endif %}
+
     {% if erro %}
-      <div class="alerta error">{{ erro }}</div>
+      <div class="resultado message error">{{ erro }}</div>
     {% endif %}
 
-    <p><a href="{{ url_for('index') }}">Voltar</a></p>
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
 </body>
 </html>

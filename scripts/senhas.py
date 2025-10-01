@@ -1,7 +1,8 @@
-import random, string
+import random
+import string
 
 def gerar_senha(tamanho=12):
-    # limites de segurança
+    """Gera uma senha aleatória segura."""
     if tamanho < 4:
         tamanho = 4
     elif tamanho > 64:

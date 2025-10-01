@@ -5,7 +5,6 @@
   <title>Média Escolar</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    /* Estilos específicos para a página de média escolar */
     .materia-bloco {
       border: 1px solid #ddd;
       padding: 12px;
@@ -23,12 +22,10 @@
       display: flex;
       gap: 10px;
       justify-content: center;
-      /* Aplica as regras para evitar o esticamento dos botões */
     }
-    /* Regras adicionadas para os botões */
     .botoes-top button {
-      flex-shrink: 0; /* Impede que o botão encolha */
-      width: auto; /* Garante que a largura seja automática */
+      flex-shrink: 0;
+      width: auto;
     }
   </style>
   <script>
@@ -66,6 +63,7 @@
 <body>
   <div class="page">
     <h1>📘 Calcular Média Escolar</h1>
+
     <form method="post">
       <div id="materias"></div>
       <div class="botoes-top">
@@ -88,7 +86,8 @@
         <h2>📊 Média Geral: {{ resultado.geral }}</h2>
       </div>
     {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
-  <a href="{{ url_for('index') }}">⬅ Voltar</a>
 </body>
 </html>

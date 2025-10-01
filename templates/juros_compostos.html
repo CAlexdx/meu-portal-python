@@ -17,12 +17,16 @@
     </form>
 
     {% if resultado %}
-      <div class="resultado">Montante Final: {{ resultado }}</div>
-    {% endif %}
-    {% if erro %}
-      <div class="resultado" style="color:red;">{{ erro }}</div>
+      <div class="resultado message success">
+        <b>Montante Final:</b> R$ {{ resultado }}
+      </div>
     {% endif %}
 
+    {% if erro %}
+      <div class="resultado message error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
 </body>
 </html>

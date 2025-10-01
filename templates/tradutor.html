@@ -2,40 +2,34 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tradutor</title>
+  <title>🌍 Tradutor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="page">
-    <h1>🌐 Tradutor Simples</h1>
+    <h1>🌍 Tradutor Simples</h1>
     <form method="post">
-      <textarea name="texto" rows="6" cols="40" placeholder="Digite um texto em português para traduzir..." required></textarea>
-      <label for="target-lang" class="sr-only">Selecione o idioma de destino</label> <!-- Acessibilidade -->
+      <textarea name="texto" rows="6" placeholder="Digite um texto para traduzir..." required>{{ texto_original }}</textarea>
+      
+      <label for="target-lang">Idioma de destino:</label>
       <select name="target" id="target-lang">
-        <option value="en">Inglês</option>
-        <option value="es">Espanhol</option>
-        <option value="fr">Francês</option>
-        <option value="de">Alemão</option>
+        <option value="en" {% if target_lang_selected == 'en' %}selected{% endif %}>Inglês</option>
+        <option value="es" {% if target_lang_selected == 'es' %}selected{% endif %}>Espanhol</option>
+        <option value="fr" {% if target_lang_selected == 'fr' %}selected{% endif %}>Francês</option>
+        <option value="de" {% if target_lang_selected == 'de' %}selected{% endif %}>Alemão</option>
       </select>
       <button type="submit">Traduzir</button>
     </form>
 
     {% if traducao %}
-      <div class="resultado sucesso">
-        <b>Tradução:</b> {{ traducao }}
-      </div>
-    {% endif %}
-    {% if erro %}
-      <div class="resultado erro">
-        <b>Erro:</b> {{ erro }}
-      </div>
+      <div class="resultado"><b>Tradução:</b> {{ traducao }}</div>
     {% endif %}
 
-    <p><a href="{{ url_for('index') }}">Voltar à Página Inicial</a></p>
+    {% if erro %}
+      <div class="alerta error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
 </body>
 </html>

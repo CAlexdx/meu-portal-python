@@ -210,3 +210,62 @@
   flex: none;
   min-width: 120px;
 }
+
+.image-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px dashed #ccc;
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.image-container img {
+  max-width: 100%;
+  max-height: 400px;
+  height: auto;
+  display: block;
+}
+/* Styling for form elements to match the converter's aesthetic */
+.page input[type="file"],
+.page select,
+.page button[type="submit"] {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: var(--radius);
+  font-size: 16px;
+}
+.page button[type="submit"] {
+  background-color: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.page button[type="submit"]:hover {
+  background-color: #1c4ed8; /* A slightly darker blue */
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align labels to the left */
+  margin-bottom: 10px; /* Spacing between form groups */
+}
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+.message.error {
+  background-color: #fee2e2; /* Light red for errors */
+  color: red;
+}
+.message.success { /* Add a success style */
+  background-color: #d1fae5; /* Light green for success */
+  color: green;
+}

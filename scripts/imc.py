@@ -1,6 +1,9 @@
 # scripts/imc.py
 def calcular_imc(peso, altura):
-    # Validar limites sensatos
+    """
+    Calcula o IMC com validação de entrada.
+    Retorna (resultado, erro).
+    """
     try:
         peso = float(peso)
         altura = float(altura)
@@ -21,4 +24,5 @@ def calcular_imc(peso, altura):
         status = "Sobrepeso"
     else:
         status = "Obesidade"
+
     return f"IMC: {imc:.2f} — {status}", None
