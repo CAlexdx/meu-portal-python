@@ -6,6 +6,7 @@ from uuid import uuid4
 from flask import Flask, render_template, jsonify, request, send_from_directory, flash, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from PIL import Image, UnidentifiedImageError
+from scripts.tradutor import traduzir
 
 # Imports dos módulos
 from scripts import (
@@ -13,7 +14,6 @@ from scripts import (
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
     editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos
 )
-from scripts.tradutor import traduzir
 
 # Configuração básica
 app = Flask(__name__)
@@ -254,28 +254,34 @@ def editor_page():
     erro = None
 
     if request.method == "POST":
-        if "imagem" not in request.files:
-            erro = "Nenhum arquivo enviado."
+        # Verifique se o arquivo está presente
+        if "imagem" not in request.files or request.files["imagem"].filename == "":
+            erro = "Nenhum arquivo enviado ou selecionado."
         else:
             imagem_file = request.files["imagem"]
-            if imagem_file.filename == "":
-                erro = "Nenhum arquivo selecionado."
-            elif not allowed_file(imagem_file.filename):
+            # Verifique se a extensão é permitida
+            if not allowed_file(imagem_file.filename):
                 erro = "Extensão de arquivo não permitida."
             else:
                 try:
                     img = Image.open(imagem_file.stream)
 
-                    # filtros enviados como lista de strings via formulário
-                    filtros = request.form.getlist('filtros[]') if 'filtros[]' in request.form else []
+                    # Obtenha o filtro selecionado (apenas um)
+                    filtro_selecionado = request.form.get("filtro", "original")
 
-                    brilho = float(request.form.get("brilho", 1.0))
-                    contraste = float(request.form.get("contraste", 1.0))
-                    nitidez = float(request.form.get("nitidez", 1.0))
+                    # Obtenha e converta os valores dos sliders (de 0-200 para 0-2.0)
+                    brilho = float(request.form.get("brilho", 100)) / 100
+                    contraste = float(request.form.get("contraste", 100)) / 100
+                    nitidez = float(request.form.get("nitidez", 100)) / 100
 
-                    img = editor_imagem.aplicar_filtros(img, filtros)
+                    # Aplique o filtro, se não for o "original"
+                    if filtro_selecionado != "original":
+                        img = editor_imagem.aplicar_filtros(img, [filtro_selecionado])
+
+                    # Aplique os ajustes de imagem
                     img_editada = editor_imagem.ajustar_imagem(img, brilho, contraste, nitidez)
-
+                    
+                    # Salve a imagem em memória
                     img_byte_arr = io.BytesIO()
                     img_editada.save(img_byte_arr, format="PNG")
                     img_byte_arr = img_byte_arr.getvalue()

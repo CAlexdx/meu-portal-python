@@ -1,10 +1,7 @@
 from PIL import Image, ImageEnhance, ImageFilter
 
 def aplicar_filtros(img, filtros=[]):
-    """
-    Aplica múltiplos filtros pré-definidos na imagem.
-    filtros: lista de strings com nomes dos filtros
-    """
+    """ Aplica múltiplos filtros pré-definidos na imagem. filtros: lista de strings com nomes dos filtros """
     for filtro in filtros:
         if filtro == "blur":
             img = img.filter(ImageFilter.BLUR)
@@ -19,9 +16,7 @@ def aplicar_filtros(img, filtros=[]):
     return img
 
 def ajustar_imagem(img, brilho=1.0, contraste=1.0, nitidez=1.0):
-    """
-    Ajusta brilho, contraste e nitidez da imagem.
-    """
+    """ Ajusta brilho, contraste e nitidez da imagem. """
     img = ImageEnhance.Brightness(img).enhance(brilho)
     img = ImageEnhance.Contrast(img).enhance(contraste)
     img = ImageEnhance.Sharpness(img).enhance(nitidez)
