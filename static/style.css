@@ -33,7 +33,7 @@
   }
   /* Controla o tamanho da imagem do logo */
   header img {
-    max-width: 250px;  /* Largura máxima do logo. Ajuste este valor. */
+    max-width: 400px;  /* Largura máxima do logo. Ajuste este valor. */
     height: auto;     /* Mantém a proporção da imagem. */
     display: block;   /* Remove o espaço extra abaixo da imagem. */
     margin: 0 auto;   /* Centraliza a imagem dentro do cabeçalho. */
