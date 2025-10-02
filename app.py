@@ -37,6 +37,8 @@ def index():
 # ==========================
 # Calendário
 # ==========================
+from scripts.calendario import gerar_calendario, MESES_PT, DIAS_PT # Importa tudo o que precisamos
+
 @app.route("/calendario", methods=["GET", "POST"])
 def calendario_page():
     try:
@@ -44,14 +46,17 @@ def calendario_page():
         mes = int(request.form.get("mes", 9))
     except ValueError:
         flash("Ano ou mês inválido.", "error")
-        return render_template("calendario.html", resultado=None, feriados=None)
+        # Passa MESES_PT e DIAS_PT para o template, mesmo em caso de erro
+        return render_template("calendario.html", dias_do_mes=None, feriados=None, ano=ano, mes=mes, MESES_PT=MESES_PT, dias_semana=DIAS_PT)
 
     if not (1900 <= ano <= 2100) or not (1 <= mes <= 12):
         flash("Ano ou mês fora do intervalo permitido.", "error")
-        return render_template("calendario.html", resultado=None, feriados=None, ano=ano, mes=mes)
+        # Passa MESES_PT e DIAS_PT para o template, mesmo em caso de erro
+        return render_template("calendario.html", dias_do_mes=None, feriados=None, ano=ano, mes=mes, MESES_PT=MESES_PT, dias_semana=DIAS_PT)
 
-    resultado, feriados = calendario.gerar_calendario(ano, mes)
-    return render_template("calendario.html", resultado=resultado, feriados=feriados, ano=ano, mes=mes)
+    # Agora a função retorna dias_do_mes, dias_semana e feriados
+    dias_do_mes, dias_semana, feriados = gerar_calendario(ano, mes)
+    return render_template("calendario.html", dias_do_mes=dias_do_mes, feriados=feriados, ano=ano, mes=mes, MESES_PT=MESES_PT, dias_semana=dias_semana)
 
 
 # ==========================
@@ -202,10 +207,11 @@ def equipes_page():
     if request.method == "POST":
         nomes = request.form.get("nomes", "")
         try:
-            qtd = int(request.form.get("qtd", 2))
+            qtd_input = request.form.get("qtd", "2")
+            qtd = int(qtd_input) if qtd_input.isdigit() else 2
             equipes, erro = sorteio_equipes.sortear_equipes(nomes, qtd)
-        except ValueError:
-            erro = "Número de equipes inválido."
+        except Exception as e:
+            erro = "Erro ao sortear equipes: " + str(e)
     return render_template("equipes.html", equipes=equipes, erro=erro)
 
 
@@ -242,42 +248,43 @@ def imc_page():
 # ==========================
 # Editor de Imagens
 # ==========================
-@app.route("/editor")
+@app.route("/editor", methods=["GET", "POST"])
 def editor_page():
-    return render_template("editor_imagem.html")
+    imagem_processada = None
+    erro = None
 
-@app.route("/processar_editor_imagem", methods=["POST"])
-def processar_editor_imagem():
-    if "imagem" not in request.files:
-        return jsonify(success=False, message="Nenhum arquivo enviado."), 400
+    if request.method == "POST":
+        if "imagem" not in request.files:
+            erro = "Nenhum arquivo enviado."
+        else:
+            imagem_file = request.files["imagem"]
+            if imagem_file.filename == "":
+                erro = "Nenhum arquivo selecionado."
+            elif not allowed_file(imagem_file.filename):
+                erro = "Extensão de arquivo não permitida."
+            else:
+                try:
+                    img = Image.open(imagem_file.stream)
 
-    imagem_file = request.files["imagem"]
-    if imagem_file.filename == "":
-        return jsonify(success=False, message="Nenhum arquivo selecionado."), 400
-    
-    if not allowed_file(imagem_file.filename):
-        return jsonify(success=False, message="Extensão de arquivo não permitida."), 400
+                    # filtros enviados como lista de strings via formulário
+                    filtros = request.form.getlist('filtros[]') if 'filtros[]' in request.form else []
 
-    try:
-        img = Image.open(imagem_file.stream)
-        filtro = request.form.get("filtro", "bw")
+                    brilho = float(request.form.get("brilho", 1.0))
+                    contraste = float(request.form.get("contraste", 1.0))
+                    nitidez = float(request.form.get("nitidez", 1.0))
 
-        processed_img = editor_imagem.aplicar_filtro(img, filtro)
+                    img = editor_imagem.aplicar_filtros(img, filtros)
+                    img_editada = editor_imagem.ajustar_imagem(img, brilho, contraste, nitidez)
 
-        img_byte_arr = io.BytesIO()
-        processed_img.save(img_byte_arr, format='JPEG') 
-        img_byte_arr = img_byte_arr.getvalue()
+                    img_byte_arr = io.BytesIO()
+                    img_editada.save(img_byte_arr, format="PNG")
+                    img_byte_arr = img_byte_arr.getvalue()
+                    imagem_processada = base64.b64encode(img_byte_arr).decode('ascii')
 
-        encoded_image = base64.b64encode(img_byte_arr).decode('ascii')
+                except Exception as e:
+                    erro = f"Erro ao processar imagem: {e}"
 
-        return jsonify(success=True, message="Filtro aplicado com sucesso!", processed_image_base64=encoded_image)
-
-    except UnidentifiedImageError:
-        return jsonify(success=False, message="Arquivo de imagem inválido ou corrompido."), 400
-    except Exception as e:
-        app.logger.error(f"Erro ao processar imagem no editor: {e}")
-        return jsonify(success=False, message=f"Erro interno ao processar imagem: {str(e)}"), 500
-
+    return render_template("editor_imagem.html", imagem_processada=imagem_processada, erro=erro)
 
 # ==========================
 # Quiz de Programação
@@ -407,30 +414,25 @@ def encurtador_page():
             erro = "Falha ao encurtar. Verifique o link."
     return render_template("encurtador.html", short=short, erro=erro)
 
-
 # ==========================
 # Juros Compostos
 # ==========================
-@app.route("/juros-compostos", methods=["GET", "POST"])
+@app.route("/juros_compostos", methods=["GET", "POST"])
 def juros_compostos_page():
     resultado, erro = None, None
+
     if request.method == "POST":
-        try:
-            capital_inicial = float(request.form.get("capital_inicial", 0))
-            taxa_anual = float(request.form.get("taxa_anual", 0)) / 100
-            tempo_meses = int(request.form.get("tempo_meses", 0))
+        capital_inicial = request.form.get("capital_inicial", 0)
+        aporte_mensal = request.form.get("aporte_mensal", 0)
+        taxa_juros_anual = request.form.get("taxa_juros_anual", 0)
+        tempo = request.form.get("tempo", 0)
+        periodo = request.form.get("periodo", "meses")
 
-            montante, err = juros_compostos.calcular_juros_compostos(capital_inicial, taxa_anual, tempo_meses)
-            if err:
-                flash(err, "error")
-            else:
-                resultado = f"Montante Final: R$ {montante:,.2f}"
-        except ValueError:
-            flash("Valores inválidos. Certifique-se de que são números.", "error")
-        except Exception as e:
-            flash(f"Ocorreu um erro: {e}", "error")
-    return render_template("juros_compostos.html", resultado=resultado)
+        resultado, erro = juros_compostos.calcular_juros_compostos(
+            capital_inicial, taxa_juros_anual, tempo, periodo, aporte_mensal
+        )
 
+    return render_template("juros_compostos.html", resultado=resultado, erro=erro)
 
 # ==========================
 # Outputs

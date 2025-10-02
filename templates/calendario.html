@@ -15,8 +15,28 @@
       <button type="submit">Gerar</button>
     </form>
 
-    {% if resultado %}
-      <pre>{{ resultado }}</pre>
+    {% if dias_do_mes %} {# Agora estamos usando 'dias_do_mes' #}
+      <h2>{{ MESES_PT[mes-1] }} {{ ano }}</h2> {# Exibe o nome do mês e ano #}
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            {% for dia_semana in dias_semana %} {# Iteramos sobre os nomes dos dias da semana #}
+              <th>{{ dia_semana }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for semana in dias_do_mes %} {# Iteramos sobre as semanas #}
+            <tr>
+              {% for dia in semana %} {# Iteramos sobre os dias da semana #}
+                <td {% if dia in feriados %}class="feriado"{% endif %}>
+                  {{ dia }}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     {% endif %}
 
     {% if feriados %}

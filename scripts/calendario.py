@@ -11,23 +11,22 @@ DIAS_PT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
 
 def gerar_calendario(ano=2025, mes=9):
     """
-    Gera um calendário de um mês específico com feriados.
+    Gera uma estrutura de calendário para exibição em HTML, além dos feriados.
 
     Args:
         ano (int): Ano desejado.
         mes (int): Mês desejado.
 
     Returns:
-        tuple: (texto_formatado, dicionário de feriados)
+        tuple: (dias_do_mes_list, lista_dias_semana_list, dicionário de feriados)
     """
     cal = calendar.Calendar(firstweekday=6)  # começa no domingo
     semanas = cal.monthdayscalendar(ano, mes)
 
-    texto = f"{MESES_PT[mes-1]} {ano}\n"
-    texto += " ".join(DIAS_PT) + "\n"
+    # Convertendo para uma lista de listas mais fácil de iterar no Jinja
+    dias_do_mes = []
     for semana in semanas:
-        linha = " ".join(f"{d:2}" if d != 0 else "  " for d in semana)
-        texto += linha + "\n"
+        dias_do_mes.append([d if d != 0 else '' for d in semana]) # Use '' para dias fora do mês
 
     feriados = {}
     try:
@@ -38,4 +37,4 @@ def gerar_calendario(ano=2025, mes=9):
     except Exception:
         feriados = {}
 
-    return texto, feriados
+    return dias_do_mes, DIAS_PT, feriados # Retorna os dias do mês, os nomes dos dias da semana e os feriados

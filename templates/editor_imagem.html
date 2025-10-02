@@ -8,41 +8,50 @@
 <body>
   <div class="page">
     <h1>🖼️ Editor de Imagem</h1>
+
     <form method="post" enctype="multipart/form-data">
-      <label>Selecione uma imagem:</label>
-      <input type="file" name="imagem" accept="image/*" required><br><br>
+      <input type="file" name="imagem" accept="image/*" required>
 
-      <label for="filtro">Filtro:</label>
-      <select name="filtro">
-        <option value="original">Original</option>
-        <option value="blur">Borrado</option>
-        <option value="contorno">Contorno</option>
-        <option value="escala_cinza">Escala de Cinza</option>
-      </select><br><br>
+      <div class="botoes-acoes">
+        <button type="submit" name="acao" value="aplicar">Aplicar Filtros</button>
+        <button type="submit" name="acao" value="salvar">Salvar</button>
+      </div>
 
-      <label>Brilho:</label>
-      <input type="number" step="0.1" name="brilho" value="1.0"><br>
-      <label>Contraste:</label>
-      <input type="number" step="0.1" name="contraste" value="1.0"><br>
-      <label>Nitidez:</label>
-      <input type="number" step="0.1" name="nitidez" value="1.0"><br><br>
+      <div class="form-group">
+        <label>Filtros:</label>
+        <select name="filtro">
+          <option value="original">Original</option>
+          <option value="blur">Borrado</option>
+          <option value="contorno">Contorno</option>
+          <option value="escala_cinza">Escala de Cinza</option>
+        </select>
+      </div>
 
-      <button type="submit">Aplicar Filtros</button>
+      <div class="form-group">
+        <label>Brilho:</label>
+        <input type="range" name="brilho" min="0" max="200" value="100">
+      </div>
+      <div class="form-group">
+        <label>Contraste:</label>
+        <input type="range" name="contraste" min="0" max="200" value="100">
+      </div>
+      <div class="form-group">
+        <label>Nitidez:</label>
+        <input type="range" name="nitidez" min="0" max="200" value="100">
+      </div>
     </form>
 
     {% if imagem_processada %}
-      <div class="resultado">
-        <h3>Imagem processada:</h3>
-        <img src="{{ url_for('static', filename=imagem_processada) }}" alt="Imagem editada" style="max-width:300px; border:1px solid #ccc; border-radius:8px;">
-        <p><a href="{{ url_for('static', filename=imagem_processada) }}" download>📥 Baixar Imagem</a></p>
+      <div class="image-container">
+        <img src="data:image/png;base64,{{ imagem_processada }}" alt="Imagem editada">
+        <a href="data:image/png;base64,{{ imagem_processada }}" download="imagem_editada.png">📥 Baixar Imagem</a>
       </div>
     {% endif %}
 
     {% if erro %}
-      <div class="alerta error">{{ erro }}</div>
+      <div class="message error">{{ erro }}</div>
     {% endif %}
 
-    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
 </body>
 </html>

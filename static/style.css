@@ -1,4 +1,4 @@
-/* ================================
+/* ================================ 
    🌐 PORTAL PYTHON - ESTILO GERAL
    ================================ */
 
@@ -9,7 +9,7 @@
     --radius: 10px;
     --gap: 14px;
   }
-
+  
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
@@ -17,54 +17,63 @@
     color: var(--title);
     padding: 20px;
   }
-
+  
   /* ================================
      🔝 CABEÇALHO
      ================================ */
   header {
     text-align: center;
     margin-bottom: 25px;
+    /* Garante que o cabeçalho não tenha uma altura fixa que possa ser quebrada */
+    display: block; 
   }
   header h1 {
     font-size: 28px;
     font-weight: 700;
   }
-
+  /* Controla o tamanho da imagem do logo */
+  header img {
+    max-width: 250px;  /* Largura máxima do logo. Ajuste este valor. */
+    height: auto;     /* Mantém a proporção da imagem. */
+    display: block;   /* Remove o espaço extra abaixo da imagem. */
+    margin: 0 auto;   /* Centraliza a imagem dentro do cabeçalho. */
+  }
+  
   /* ================================
      🧭 MENU HORIZONTAL
      ================================ */
-     .menu-horizontal {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: var(--gap);
-      max-width: 1200px;
-      margin: 20px auto;
-    }
-    .menu-horizontal a {
-      padding: 14px 18px;
-      border-radius: var(--radius);
-      border: 1px solid #ddd;
-      background: #fff;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
-      text-align: center;
-      transition: 0.2s;
-    }
-    .menu-horizontal a:hover {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    /* Ajuste responsivo */
-    @media (max-width: 1024px) {
-      .menu-horizontal { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 600px) {
-      .menu-horizontal { grid-template-columns: repeat(2, 1fr); }
-      header h1 { font-size: 22px; }
-    }
-
+  .menu-horizontal {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--gap);
+    max-width: 1200px;
+    margin: 20px auto;
+  }
+  .menu-horizontal a {
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border: 1px solid #ddd;
+    background: #fff;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    transition: 0.2s;
+  }
+  .menu-horizontal a:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  
+  /* Ajuste responsivo */
+  @media (max-width: 1024px) {
+    .menu-horizontal { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .menu-horizontal { grid-template-columns: repeat(2, 1fr); }
+    header h1 { font-size: 22px; }
+  }
+  
   /* ================================
      📄 PÁGINAS INTERNAS
      ================================ */
@@ -75,22 +84,19 @@
     background: #fff;
     border-radius: var(--radius);
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    text-align: center;
+    text-align: center; /* JÁ EXISTE e é o responsável por centralizar o conteúdo */
   }
-
   .page h1 {
     margin-bottom: 20px;
     font-size: 24px;
   }
-
-  .page form { /* This style for general forms in .page should be kept */
+  .page form {
     margin: 20px 0;
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
   }
-
   .page input,
   .page select,
   .page button,
@@ -100,7 +106,10 @@
     border-radius: 6px;
     border: 1px solid #ccc;
   }
-
+  .page textarea {
+    width: 100%;
+    resize: vertical;
+  }
   .page button {
     background: var(--accent);
     color: #fff;
@@ -111,8 +120,57 @@
   .page button:hover {
     background: #1d4ed8;
   }
-
-  /* Estilos específicos para a página de média escolar (integrados aqui) */
+  
+  /* ================================
+     🗓️ CALENDÁRIO (NOVAS REGRAS OU AJUSTES)
+     ================================ */
+  .calendar-table {
+    margin: 20px auto; /* Centraliza a tabela horizontalmente e adiciona margem vertical */
+    border-collapse: collapse;
+    width: 90%; /* Ajuste a largura conforme necessário */
+    max-width: 500px; /* Garante que a tabela não fique muito larga */
+  }
+  
+  .calendar-table th, .calendar-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .calendar-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .feriado {
+    background-color: #ffe0e0; /* Cor de fundo para feriados */
+    font-weight: bold;
+    color: #c00;
+  }
+  
+  /* Estilos para a lista de feriados */
+  /* A regra 'ul' já existe, vamos ser mais específicos para a lista de feriados dentro de '.page' */
+  .page ul { /* Mantém as regras gerais de lista dentro de .page */
+    list-style: none; /* Remove os marcadores de lista padrão */
+    padding: 0;
+    text-align: left; /* Alinha a lista à esquerda dentro do contêiner centralizado */
+    display: inline-block; /* Permite centralizar o bloco da lista usando o text-align: center do .page */
+    margin-top: 10px;
+    margin-bottom: 20px; /* Adiciona um pouco mais de margem para o link 'Voltar' */
+  }
+  
+  .page ul li {
+    margin-bottom: 5px;
+  }
+  
+  /* Ajuste para o link "Voltar" */
+  .page p a {
+      margin-top: 20px; /* Garante espaçamento abaixo dos feriados */
+  }
+  
+  
+  /* ================================
+     📘 MÉDIA ESCOLAR
+     ================================ */
   .materia-bloco {
     border: 1px solid #ddd;
     padding: 12px;
@@ -125,38 +183,62 @@
     gap: 8px;
     margin-top: 6px;
   }
-  .botoes-top { /* This is the key change for your specific buttons */
+  .botoes-top {
     margin: 12px 0;
     display: flex;
     gap: 10px;
     justify-content: center;
-    align-items: center;   /* Prevent buttons from stretching vertically */
+    align-items: center;
   }
   .botoes-top button {
-    flex-shrink: 0; /* Impede que o botão encolha */
-    width: auto; /* Garante que a largura seja automática */
+    flex-shrink: 0;
+    width: auto;
   }
-
-
-  /* Resultados */
-  .resultado, .page pre {
-    margin-top: 20px;
-    padding: 14px;
-    background: #f9fafb;
-    border-radius: 6px;
-    font-size: 17px;
-    text-align: center;
+  
+  /* ================================
+     👥 ALERTAS / ERROS
+     ================================ */
+  .alerta.error {
+    color: red;
+    margin: 10px 0;
+    font-weight: 500;
   }
-
-  /* Links */
-  .page a {
-    margin-top: 20px;
-    display: inline-block;
+  /* A regra 'ul' geral foi ajustada acima para o calendário, mas mantenho aqui para referência se houver outras listas */
+  /* ul {
+    list-style: none;
+    padding-left: 0;
+    text-align: left;
+  } */
+  /* li { margin-bottom: 5px; } */
+  
+  /* ================================
+     💰 ORÇAMENTO / JUROS COMPOSTOS
+     ================================ */
+  .resumo-detalhes {
+    margin-top: 15px;
+    text-align: left;
+  }
+  .resumo-detalhes h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
     color: var(--accent);
-    text-decoration: none;
   }
-  .page a:hover { text-decoration: underline; }
-
+  .resumo-detalhes ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+  }
+  .resumo-detalhes li {
+    padding: 3px 0;
+    border-bottom: 1px dashed #eee;
+    display: flex;
+    justify-content: space-between;
+  }
+  .resumo-detalhes li:last-child {
+    border-bottom: none;
+  }
+  
   /* ================================
      🎯 QUIZ
      ================================ */
@@ -165,14 +247,12 @@
     flex-direction: column;
     gap: 14px;
   }
-
   .quiz-opcoes {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
     justify-content: center;
   }
-
   .quiz-opcoes label {
     padding: 8px 14px;
     border: 1px solid #ddd;
@@ -187,9 +267,100 @@
   .quiz-opcoes label:hover {
     background: #eef2ff;
   }
-
+  
   /* ================================
-     📱 RESPONSIVIDADE
+     📷 CONVERSOR DE IMAGEM
+     ================================ */
+  .botoes-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .botoes-acoes button {
+    flex: none;
+    min-width: 120px;
+  }
+  .image-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .image-container img {
+    max-width: 100%;
+    max-height: 400px;
+    height: auto;
+    display: block;
+  }
+  .page input[type="file"],
+  .page select,
+  .page button[type="submit"] {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 16px;
+  }
+  .page button[type="submit"] {
+    background-color: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .page button[type="submit"]:hover {
+    background-color: #1c4ed8;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  .message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: var(--radius);
+    font-weight: 500;
+  }
+  .message.error {
+    background-color: #fee2e2;
+    color: red;
+  }
+  .message.success {
+    background-color: #d1fae5;
+    color: green;
+  }
+  
+  /* ================================
+     🖼️ RESULTADOS E LINKS
+     ================================ */
+  .resultado, .page pre {
+    margin-top: 20px;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 6px;
+    font-size: 17px;
+    text-align: center;
+    word-wrap: break-word; /* ✅ evita quebrar layout em senhas longas */
+  }
+  .page a {
+    margin-top: 20px;
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .page a:hover { text-decoration: underline; }
+  
+  /* ================================
+     📱 RESPONSIVIDADE EXTRA
      ================================ */
   @media (max-width: 600px) {
     header h1 { font-size: 22px; }
@@ -198,74 +369,4 @@
     .page { padding: 15px; }
     .quiz-opcoes { flex-direction: column; align-items: stretch; }
   }
-  /* Mantém os botões lado a lado */
-.botoes-acoes {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.botoes-acoes button {
-  flex: none;
-  min-width: 120px;
-}
-
-.image-container {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px dashed #ccc;
-  min-height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-.image-container img {
-  max-width: 100%;
-  max-height: 400px;
-  height: auto;
-  display: block;
-}
-/* Styling for form elements to match the converter's aesthetic */
-.page input[type="file"],
-.page select,
-.page button[type="submit"] {
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: var(--radius);
-  font-size: 16px;
-}
-.page button[type="submit"] {
-  background-color: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.page button[type="submit"]:hover {
-  background-color: #1c4ed8; /* A slightly darker blue */
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align labels to the left */
-  margin-bottom: 10px; /* Spacing between form groups */
-}
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-.message {
-  margin-top: 15px;
-  padding: 10px;
-  border-radius: var(--radius);
-  font-weight: 500;
-}
-.message.error {
-  background-color: #fee2e2; /* Light red for errors */
-  color: red;
-}
-.message.success { /* Add a success style */
-  background-color: #d1fae5; /* Light green for success */
-  color: green;
-}
+  
