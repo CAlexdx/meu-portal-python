@@ -370,16 +370,21 @@ def download_file(filename):
 @app.route("/calculadora", methods=["GET", "POST"])
 def calculadora_page():
     resultado, erro = None, None
+    a, b, operacao = None, None, None
+
     if request.method == "POST":
-        oper = request.form.get("operacao")
+        operacao = request.form.get("operacao")
         a = request.form.get("a")
         b = request.form.get("b")
-        res, err = calculadora.calcular(oper, a, b)
+        res, err = calculadora.calcular(operacao, a, b)
         if err:
             erro = err
         else:
+            # Arredonda para 6 casas decimais se for um número, senão mantém o valor
             resultado = round(res, 6) if isinstance(res, (int, float)) else res
-    return render_template("calculadora.html", resultado=resultado, erro=erro)
+
+    return render_template("calculadora.html", resultado=resultado, erro=erro, a=a, b=b, operacao=operacao)
+
 
 
 # ==========================

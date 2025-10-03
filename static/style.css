@@ -147,15 +147,13 @@
     color: #c00;
   }
   
-  /* Estilos para a lista de feriados */
-  /* A regra 'ul' já existe, vamos ser mais específicos para a lista de feriados dentro de '.page' */
   .page ul { /* Mantém as regras gerais de lista dentro de .page */
     list-style: none; /* Remove os marcadores de lista padrão */
     padding: 0;
     text-align: left; /* Alinha a lista à esquerda dentro do contêiner centralizado */
     display: inline-block; /* Permite centralizar o bloco da lista usando o text-align: center do .page */
     margin-top: 10px;
-    margin-bottom: 20px; /* Adiciona um pouco mais de margem para o link 'Voltar' */
+    margin-bottom: 20px; /* Adiciona um pouco mais margem para o link 'Voltar' */
   }
   
   .page ul li {
@@ -167,7 +165,94 @@
       margin-top: 20px; /* Garante espaçamento abaixo dos feriados */
   }
   
-  
+  /* Estilos para a Calculadora */
+.calculator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.calculator-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+}
+
+.input-field,
+.select-field {
+  flex-grow: 1;
+  min-width: 120px;
+  padding: 12px 15px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus,
+.select-field:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.calculate-button {
+  flex-grow: 1;
+  min-width: 100px;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calculate-button:hover {
+  background: #1e40af;
+}
+
+/* Estilo para a mensagem de resultado */
+.resultado.success {
+  background-color: #e9f5e9;
+  border: 1px solid #c8e6c9;
+  color: #1b5e20;
+  padding: 12px;
+  border-radius: var(--radius);
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.alerta.error {
+  background-color: #fcebeb;
+  border: 1px solid #fbcaca;
+  color: #c62828;
+  padding: 12px;
+  border-radius: var(--radius);
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Resposta para telas pequenas */
+@media (max-width: 600px) {
+  .calculator-form {
+      flex-direction: column;
+  }
+}
+
+
   /* ================================
      📘 MÉDIA ESCOLAR
      ================================ */
