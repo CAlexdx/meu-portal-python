@@ -30,7 +30,7 @@ def gerar_calendario(ano=2025, mes=9):
 
     feriados = {}
     try:
-        br_holidays = holidays.Brazil(years=ano)
+        br_holidays = holidays.Brazil(years=ano, locale='pt_BR')
         for dia, nome in br_holidays.items():
             if dia.month == mes:
                 feriados[dia.day] = nome
