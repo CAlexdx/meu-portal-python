@@ -1,4 +1,3 @@
-# scripts/calendario.py
 import calendar
 import holidays
 
