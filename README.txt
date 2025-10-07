@@ -28,7 +28,7 @@ O projeto já conta com os seguintes módulos:
 ⚙️ Como rodar o projeto localmente
 Instale as dependências:
 pip install flask pyqrcode pillow pytubefix requests googletrans==4.0.0-rc1
-
+pip install -m requirements.txt
 Execute o servidor:
 python app.py
 
