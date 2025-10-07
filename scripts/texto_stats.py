@@ -1,3 +1,4 @@
+# scripts/texto_stats.py
 import re
 
 MAX_TEXT = 50000  # limite de 50 mil caracteres

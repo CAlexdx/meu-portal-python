@@ -1,3 +1,4 @@
+# scripts/senhas.py
 import random
 import string
 

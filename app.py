@@ -86,7 +86,11 @@ def youtube_page():
     arquivo = None
     erro = None
     if os.environ.get("RENDER") == "true":
-        erro = "Este recurso só funciona na versão local do portal."
+        erro = ( "⚠️ O módulo de download do YouTube não está disponível na versão online. "
+        "Por motivos de segurança e restrições da plataforma Render, "
+        "o servidor em nuvem não permite conexões diretas com o YouTube. "
+        "Para utilizar este recurso, execute o portal localmente no seu computador."
+        )
     elif request.method == "POST":
         link = request.form.get("link", "").strip()
         if not link.startswith("http"):

@@ -1,3 +1,4 @@
+# scripts/quiz.py
 import random
 
 # Lista de perguntas

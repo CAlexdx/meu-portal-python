@@ -1,3 +1,4 @@
+# scripts/sorteio_equipes.py
 import random
 
 MAX_NOMES = 500

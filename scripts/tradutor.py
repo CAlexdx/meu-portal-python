@@ -1,4 +1,4 @@
-# tradutor.py
+# scripts/tradutor.py
 from deep_translator import GoogleTranslator
 
 def traduzir(texto, target='en'):

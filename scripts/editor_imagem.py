@@ -1,3 +1,4 @@
+# scripts/editor_imagem.py
 from PIL import Image, ImageEnhance, ImageFilter
 
 def aplicar_filtros(img, filtros=[]):

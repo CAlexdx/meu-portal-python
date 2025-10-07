@@ -1,3 +1,4 @@
+# scripts/sorteio.py
 import random
 
 MAX_NOMES = 500

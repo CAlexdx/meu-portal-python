@@ -35,7 +35,6 @@ python app.py
 Acesse no navegador:
 http://127.0.0.1:5000/
 
-
 📂 Os resultados (QR Codes, vídeos baixados, etc.) ficam salvos na pasta /outputs.
 
 Versão Online
@@ -43,16 +42,25 @@ O projeto também está disponível hospedado no Render:
 meu-portal-python.onrender.com
 
 🛠️ Como adicionar um novo módulo
-
 Crie um arquivo em scripts/ (ex: meu_modulo.py).
-
 Crie um template em templates/ (ex: meu_modulo.html).
-
 No app.py, adicione uma nova rota para esse módulo.
-
 No index.html, adicione um link para a nova ferramenta.
 
-📌 Objetivo do Projeto
 
+📌 Objetivo do Projeto
 Este portal foi criado como um laboratório de estudos em Python e Flask, reunindo pequenos projetos em uma plataforma organizada.
 O objetivo é facilitar o aprendizado, demonstrar integração de bibliotecas e oferecer um conjunto de ferramentas úteis para qualquer pessoa acessar.
+
+⚠️ Observação sobre o módulo YouTube Downloader
+
+Por motivos de segurança, a plataforma Render não permite que aplicativos hospedados realizem
+conexões diretas com servidores do YouTube. Isso impede o funcionamento do módulo de download
+de vídeos na versão online do portal
+
+🔹 Localmente (no computador) → O download funciona normalmente.  
+🔹 Online (Render) → O módulo exibe uma mensagem explicando a limitação.
+
+Essa restrição é comum em serviços de hospedagem e tem o objetivo de evitar abusos de rede ou
+possíveis violações de direitos autorais. O código continua incluído para fins de estudo e
+demonstração da integração com a biblioteca `pytubefix`
