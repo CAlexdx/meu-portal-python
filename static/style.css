@@ -353,6 +353,44 @@
     background: #eef2ff;
   }
   
+/* ============================
+   🌍 MÓDULO MAPA TURÍSTICO
+   ============================ */
+   #map {
+    height: 80vh;
+    width: 100%;
+    border: 2px solid var(--accent);
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+  
+  .mapa-intro {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--title);
+    margin-bottom: 10px;
+  }
+  
+  .popup h3 {
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+  
+  .popup p {
+    margin: 3px 0;
+    font-size: 0.9rem;
+  }
+  
+  .voltar {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: var(--accent);
+    font-weight: bold;
+  }
+  
+
   /* ================================
      📷 CONVERSOR DE IMAGEM
      ================================ */

@@ -1,8 +1,10 @@
-Meu Portal Python é um projeto desenvolvido em Flask que reúne diversas ferramentas úteis em um único lugar. Ele foi criado para facilitar o acesso a utilitários do dia a dia, como calculadora, tradutor, gerador de senhas, conversores, entre outros.
+Meu Portal Python é um projeto desenvolvido em Flask que reúne diversas ferramentas úteis em um único lugar.
+Ele foi criado para facilitar o acesso a utilitários do dia a dia, como calculadora, tradutor, gerador de senhas, conversores, entre outros.
 
 A ideia principal é ser um portal de utilidades online, acessível tanto localmente quanto hospedado em nuvem.
 
-🔧 Ferramentas disponíveis
+🔧 FERRAMENTAS DISPONÍVEIS
+
 O projeto já conta com os seguintes módulos:
 
 📅 Calendário – Visualização de calendários mensais/anuais.
@@ -23,44 +25,61 @@ O projeto já conta com os seguintes módulos:
 🌍 Tradutor – Tradução de textos para vários idiomas.
 🔗 Encurtador de Links – Gera URLs curtas.
 📈 Juros Compostos – Calculadora de crescimento de capital.
+🗺️ Mapa Global – Mostra um mapa interativo com pontos turísticos e curiosidades.
+☁️ Clima Global – Exibe informações de temperatura, umidade e condições do tempo em cidades do mundo.
 
-
-⚙️ Como rodar o projeto localmente
+⚙️ COMO RODAR O PROJETO LOCALMENTE
 Instale as dependências:
 pip install flask pyqrcode pillow pytubefix requests googletrans==4.0.0-rc1
-pip install -m requirements.txt
-Execute o servidor:
-python app.py
+pip install -r requirements.txt
 
+Execute o servidor local:
+python app.py
 Acesse no navegador:
 http://127.0.0.1:5000/
 
-📂 Os resultados (QR Codes, vídeos baixados, etc.) ficam salvos na pasta /outputs.
+Os resultados (QR Codes, vídeos baixados, etc.) ficam salvos na pasta /outputs.
 
-Versão Online
+VERSÃO ONLINE
 O projeto também está disponível hospedado no Render:
 meu-portal-python.onrender.com
 
-🛠️ Como adicionar um novo módulo
-Crie um arquivo em scripts/ (ex: meu_modulo.py).
-Crie um template em templates/ (ex: meu_modulo.html).
-No app.py, adicione uma nova rota para esse módulo.
+🛠️ COMO ADICIONAR UM NOVO MÓDULO
+Crie um arquivo em scripts/ (exemplo: meu_modulo.py)
+Crie um template em templates/ (exemplo: meu_modulo.html)
+No app.py, adicione uma nova rota Flask para o módulo.
 No index.html, adicione um link para a nova ferramenta.
 
+📌 OBJETIVO DO PROJETO
 
-📌 Objetivo do Projeto
 Este portal foi criado como um laboratório de estudos em Python e Flask, reunindo pequenos projetos em uma plataforma organizada.
 O objetivo é facilitar o aprendizado, demonstrar integração de bibliotecas e oferecer um conjunto de ferramentas úteis para qualquer pessoa acessar.
 
-⚠️ Observação sobre o módulo YouTube Downloader
+O projeto também demonstra:
+Organização de rotas Flask
+Criação de interfaces HTML dinâmicas
+Integração com APIs externas (como clima e tradução)
+Manipulação de imagens e dados em Python
 
-Por motivos de segurança, a plataforma Render não permite que aplicativos hospedados realizem
-conexões diretas com servidores do YouTube. Isso impede o funcionamento do módulo de download
-de vídeos na versão online do portal
+⚠️ OBSERVAÇÃO SOBRE O MÓDULO YOUTUBE DOWNLOADER
 
-🔹 Localmente (no computador) → O download funciona normalmente.  
-🔹 Online (Render) → O módulo exibe uma mensagem explicando a limitação.
+Por motivos de segurança, a plataforma Render não permite que aplicativos hospedados realizem conexões diretas com servidores do YouTube.
+Isso impede o funcionamento do módulo de download de vídeos na versão online do portal.
 
-Essa restrição é comum em serviços de hospedagem e tem o objetivo de evitar abusos de rede ou
-possíveis violações de direitos autorais. O código continua incluído para fins de estudo e
-demonstração da integração com a biblioteca `pytubefix`
+🔹 Localmente (no computador): O download funciona normalmente.
+🔹 Online (Render): O módulo exibe uma mensagem explicando a limitação.
+
+Essa restrição é comum em serviços de hospedagem e tem o objetivo de evitar abusos de rede ou possíveis violações de direitos autorais.
+O código continua incluído para fins de estudo e demonstração da integração com a biblioteca pytubefix.
+
+
+📚 INFORMAÇÕES TÉCNICAS
+
+Tecnologias utilizadas:
+Flask (Python)
+HTML, CSS e JavaScript
+
+CRÉDITOS
+Autor: Calebe Alves Câmara
+Ano: 2025
+Licença: Livre para estudo e modificação (uso não comercial)

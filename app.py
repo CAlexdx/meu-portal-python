@@ -12,7 +12,8 @@ from scripts.tradutor import traduzir
 from scripts import (
     calendario, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
-    editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos
+    editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos, mapa_turistico,
+    clima
 )
 
 # Configuração básica
@@ -448,6 +449,30 @@ def juros_compostos_page():
         )
 
     return render_template("juros_compostos.html", resultado=resultado, erro=erro)
+
+# ==========================
+# Clima
+# ==========================
+@app.route("/clima", methods=["GET", "POST"])
+def clima_page():
+    dados = None
+    cidade = ""
+    if request.method == "POST":
+        cidade = request.form.get("cidade", "").strip()
+        if cidade:
+            dados = clima.obter_clima(cidade)
+    return render_template("clima.html", dados=dados, cidade=cidade)
+
+# ==========================
+# Mapa Turístico
+# ==========================
+@app.route("/mapa_turistico")
+def mapa_turistico_view():
+    return render_template("mapa_turistico.html")
+
+@app.route("/pontos_turisticos")
+def pontos_turisticos_json():
+    return jsonify(mapa_turistico.obter_pontos_turisticos())
 
 # ==========================
 # Outputs
