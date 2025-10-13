@@ -7,6 +7,9 @@ from flask import Flask, render_template, jsonify, request, send_from_directory,
 from werkzeug.utils import secure_filename
 from PIL import Image, UnidentifiedImageError
 from scripts.tradutor import traduzir
+from scripts.consumo_combustivel import calcular_consumo_medio
+from scripts.calendario import gerar_calendario, MESES_PT, DIAS_PT
+from scripts.conversor_tempo import converter_tempo
 
 # Imports dos módulos
 from scripts import (
@@ -38,8 +41,6 @@ def index():
 # ==========================
 # Calendário
 # ==========================
-from scripts.calendario import gerar_calendario, MESES_PT, DIAS_PT # Importa tudo o que precisamos
-
 @app.route("/calendario", methods=["GET", "POST"])
 def calendario_page():
     try:
@@ -473,6 +474,55 @@ def mapa_turistico_view():
 @app.route("/pontos_turisticos")
 def pontos_turisticos_json():
     return jsonify(mapa_turistico.obter_pontos_turisticos())
+
+# ==========================
+# Consumo de Combustível
+# ==========================
+@app.route("/consumo_combustivel", methods=["GET", "POST"])
+def consumo_combustivel_page():
+    resultado = None
+    erro = None
+    if request.method == "POST":
+        try:
+            distancia = float(request.form["distancia"])
+            consumo = float(request.form["consumo"])
+            preco = float(request.form["preco"])
+            ida_volta = "ida_volta" in request.form
+
+            if ida_volta:
+                distancia *= 2  # dobra a distância
+
+            if consumo <= 0:
+                erro = "O consumo médio deve ser maior que zero."
+            else:
+                litros_gastos = distancia / consumo
+                custo_total = litros_gastos * preco
+                resultado = (f"Para percorrer {distancia:.2f} km, "
+                             f"você gastará aproximadamente {litros_gastos:.2f} litros "
+                             f"de combustível, com custo total de R$ {custo_total:.2f}.")
+        except ValueError:
+            erro = "Por favor, insira apenas números válidos."
+    return render_template("consumo_combustivel.html", resultado=resultado, erro=erro)
+
+
+
+
+# ==========================
+# Conversor de Tempo
+# ==========================
+@app.route("/conversor_tempo", methods=["GET", "POST"])
+def conversor_tempo_page():
+    resultado = None
+    erro = None
+    if request.method == "POST":
+        valor = request.form.get("valor", "").strip()
+        unidade_origem = request.form.get("unidade_origem", "").strip()
+        unidade_destino = request.form.get("unidade_destino", "").strip()
+        if not valor or not unidade_origem or not unidade_destino:
+            erro = "Erro: Preencha todos os campos."
+        else:
+            resultado, erro = converter_tempo(valor, unidade_origem, unidade_destino)
+    return render_template("conversor_tempo.html", resultado=resultado, erro=erro)
 
 # ==========================
 # Outputs
