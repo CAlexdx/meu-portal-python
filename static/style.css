@@ -648,6 +648,218 @@ header img {
     color: var(--accent);
 }
 
+/* ================================
+   🎨 PLANOS DE FUNDO ESPECÍFICOS
+   ================================ */
+
+/* Fundo para a página principal (index.html) */
+body.fundo-principal {
+    background-image: url("{{ url_for('static', filename='background-principal.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de calendário (calendario.html) */
+body.fundo-calendario {
+    background-image: url("{{ url_for('static', filename='background-calendario.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de conversor de tempo (conversor_tempo.html) */
+body.fundo-conversor-tempo {
+    background-image: url("{{ url_for('static', filename='background-conversor-tempo.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de calculadora (calculadora.html) */
+body.fundo-calculadora {
+    background-image: url("{{ url_for('static', filename='background-calculadora.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de clima (clima.html) */
+body.fundo-clima {
+    background-image: url("{{ url_for('static', filename='background-clima.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de temperatura (temperatura.html) */
+body.fundo-temperatura {
+    background-image: url("{{ url_for('static', filename='background-temperatura.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de IMC (imc.html) */
+body.fundo-imc {
+    background-image: url("{{ url_for('static', filename='background-imc.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de YouTube (youtube.html) */
+body.fundo-youtube {
+    background-image: url("{{ url_for('static', filename='background-youtube.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de encurtador (encurtador.html) */
+body.fundo-encurtador {
+    background-image: url("{{ url_for('static', filename='background-encurtador.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de QR Code (qrcode.html) */
+body.fundo-qrcode {
+    background-image: url("{{ url_for('static', filename='background-qrcode.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de editor (editor.html) */
+body.fundo-editor {
+    background-image: url("{{ url_for('static', filename='background-editor.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de texto (texto.html) */
+body.fundo-texto {
+    background-image: url("{{ url_for('static', filename='background-texto.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de média escolar (media.html) */
+body.fundo-media {
+    background-image: url("{{ url_for('static', filename='background-media.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de mapa turístico (mapa_turistico.html) */
+body.fundo-mapa-turistico {
+    background-image: url("{{ url_for('static', filename='background-mapa-turistico.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de tradutor (tradutor.html) */
+body.fundo-tradutor {
+    background-image: url("{{ url_for('static', filename='background-tradutor.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de conversor de moedas (conversor.html) */
+body.fundo-conversor {
+    background-image: url("{{ url_for('static', filename='background-conversor.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de orçamento (orcamento.html) */
+body.fundo-orcamento {
+    background-image: url("{{ url_for('static', filename='background-orcamento.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de consumo de combustível (consumo_combustivel.html) */
+body.fundo-consumo-combustivel {
+    background-image: url("{{ url_for('static', filename='background-consumo-combustivel.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de juros compostos (juros_compostos.html) */
+body.fundo-juros-compostos {
+    background-image: url("{{ url_for('static', filename='background-juros-compostos.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de sorteio (sorteio.html) */
+body.fundo-sorteio {
+    background-image: url("{{ url_for('static', filename='background-sorteio.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de equipes (equipes.html) */
+body.fundo-equipes {
+    background-image: url("{{ url_for('static', filename='background-equipes.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de quiz (quiz.html) */
+body.fundo-quiz {
+    background-image: url("{{ url_for('static', filename='background-quiz.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Fundo para a página de senhas (senhas.html) */
+body.fundo-senhas {
+    background-image: url("{{ url_for('static', filename='background-senhas.jpg') }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+
 /* Responsividade para formulários */
 @media (max-width: 600px) {
     .combustivel-form,

@@ -2,19 +2,30 @@
 import requests
 
 def obter_coordenadas(cidade):
-    """Usa a API Nominatim (OpenStreetMap) para converter cidade em latitude e longitude."""
+    """
+    Usa a API de geocodificação do Open-Meteo para converter o nome da cidade
+    em latitude e longitude. Compatível com Render e execução local.
+    """
     try:
-        url = f"https://nominatim.openstreetmap.org/search?q={cidade}&format=json&limit=1"
-        r = requests.get(url, headers={"User-Agent": "MeuPortalPython/1.0"}, timeout=10)
+        url = f"https://geocoding-api.open-meteo.com/v1/search?name={cidade}&count=1&language=pt&format=json"
+        r = requests.get(url, timeout=10)
         data = r.json()
-        if not data:
+
+        # Verifica se encontrou resultados
+        if not data.get("results"):
             return None
-        return float(data[0]["lat"]), float(data[0]["lon"])
+
+        resultado = data["results"][0]
+        return float(resultado["latitude"]), float(resultado["longitude"])
     except Exception:
         return None
 
+
 def obter_clima(cidade):
-    """Obtém informações de clima atual de qualquer cidade."""
+    """
+    Obtém informações de clima atual de qualquer cidade do mundo,
+    utilizando as coordenadas obtidas pela API de geocodificação.
+    """
     coords = obter_coordenadas(cidade)
     if not coords:
         return {"erro": f"Não foi possível encontrar '{cidade}'."}
@@ -23,10 +34,16 @@ def obter_clima(cidade):
     try:
         url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
         r = requests.get(url, timeout=10)
+
         if r.status_code != 200:
-            return {"erro": "Erro ao obter clima."}
+            return {"erro": "Erro ao obter dados do clima."}
+
         data = r.json()
         clima = data.get("current_weather", {})
+
+        if not clima:
+            return {"erro": "Não foi possível obter as informações de clima."}
+
         return {
             "cidade": cidade.title(),
             "temperatura": clima.get("temperature"),
@@ -35,5 +52,6 @@ def obter_clima(cidade):
             "lat": lat,
             "lon": lon
         }
+
     except Exception as e:
-        return {"erro": str(e)}
+        return {"erro": f"Erro ao conectar à API: {e}"}
