@@ -464,6 +464,7 @@ def clima_page():
             dados = clima.obter_clima(cidade)
     return render_template("clima.html", dados=dados, cidade=cidade)
 
+
 # ==========================
 # Mapa Turístico
 # ==========================

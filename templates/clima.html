@@ -19,9 +19,30 @@
         <p class="erro">{{ dados.erro }}</p>
       {% else %}
         <h2>{{ dados.cidade }}</h2>
+        <p><b>Hora local:</b> {{ dados.hora_local }}</p>
         <p><b>Temperatura:</b> {{ dados.temperatura }} °C</p>
         <p><b>Vento:</b> {{ dados.vento }} km/h</p>
         <p>{{ dados.descricao }}</p>
+
+        {% if dados.previsao %}
+          <h3>Previsão dos próximos dias</h3>
+          <table>
+            <tr>
+              <th>Data</th>
+              <th>Máx (°C)</th>
+              <th>Mín (°C)</th>
+              <th>Chuva (mm)</th>
+            </tr>
+            {% for dia in dados.previsao %}
+            <tr>
+              <td>{{ dia.data }}</td>
+              <td>{{ dia.max }}</td>
+              <td>{{ dia.min }}</td>
+              <td>{{ dia.chuva }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
       {% endif %}
     {% endif %}
 
