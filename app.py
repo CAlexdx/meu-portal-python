@@ -10,10 +10,11 @@ from scripts.tradutor import traduzir
 from scripts.consumo_combustivel import calcular_consumo_medio
 from scripts.calendario import gerar_calendario, MESES_PT, DIAS_PT
 from scripts.conversor_tempo import converter_tempo
+from scripts.conversor_medidas import converter_medida
 
 # Imports dos módulos
 from scripts import (
-    calendario, gerar_qrcode, PYtube, conversor, media_escolar,
+    calendario, conversor_medidas, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
     editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos, mapa_turistico,
     clima
@@ -524,6 +525,22 @@ def conversor_tempo_page():
         else:
             resultado, erro = converter_tempo(valor, unidade_origem, unidade_destino)
     return render_template("conversor_tempo.html", resultado=resultado, erro=erro)
+
+# Conversor de Medidas
+@app.route("/conversor_medidas", methods=["GET", "POST"])
+def conversor_medidas_page():
+    resultado = erro = None
+    if request.method == "POST":
+        valor = request.form.get("valor")
+        de = request.form.get("de")
+        para = request.form.get("para")
+        r = converter_medida(valor, de, para)
+        if r is None:
+            erro = "Não foi possível converter as unidades selecionadas."
+        else:
+            resultado = round(r, 4)
+    return render_template("conversor_medidas.html", resultado=resultado, erro=erro)
+
 
 # ==========================
 # Outputs
