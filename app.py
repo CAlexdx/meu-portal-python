@@ -259,45 +259,48 @@ def imc_page():
 def editor_page():
     imagem_processada = None
     erro = None
+    filtros_disponiveis = [
+        "preto_branco", "sepia", "inverter", "blur", "contorno",
+        "bordas", "detalhe", "realce", "saturacao_alta", "saturacao_baixa",
+        "nitidez", "escurecer", "clarear"
+    ]
 
     if request.method == "POST":
-        # Verifique se o arquivo está presente
-        if "imagem" not in request.files or request.files["imagem"].filename == "":
-            erro = "Nenhum arquivo enviado ou selecionado."
-        else:
+        try:
+            if "imagem" not in request.files:
+                erro = "Nenhuma imagem enviada."
+                return render_template("editor_filtros.html", erro=erro, filtros=filtros_disponiveis)
+
             imagem_file = request.files["imagem"]
-            # Verifique se a extensão é permitida
-            if not allowed_file(imagem_file.filename):
-                erro = "Extensão de arquivo não permitida."
-            else:
-                try:
-                    img = Image.open(imagem_file.stream)
+            if imagem_file.filename == "":
+                erro = "Nenhum arquivo selecionado."
+                return render_template("editor_filtros.html", erro=erro, filtros=filtros_disponiveis)
 
-                    # Obtenha o filtro selecionado (apenas um)
-                    filtro_selecionado = request.form.get("filtro", "original")
+            filtro = request.form.get("filtro", "preto_branco")
 
-                    # Obtenha e converta os valores dos sliders (de 0-200 para 0-2.0)
-                    brilho = float(request.form.get("brilho", 100)) / 100
-                    contraste = float(request.form.get("contraste", 100)) / 100
-                    nitidez = float(request.form.get("nitidez", 100)) / 100
+            from scripts import editor_imagem
+            from PIL import Image
+            img = Image.open(imagem_file.stream)
 
-                    # Aplique o filtro, se não for o "original"
-                    if filtro_selecionado != "original":
-                        img = editor_imagem.aplicar_filtros(img, [filtro_selecionado])
+            # Aplica filtro escolhido
+            img_editada = editor_imagem.aplicar_filtros(img, [filtro])
 
-                    # Aplique os ajustes de imagem
-                    img_editada = editor_imagem.ajustar_imagem(img, brilho, contraste, nitidez)
-                    
-                    # Salve a imagem em memória
-                    img_byte_arr = io.BytesIO()
-                    img_editada.save(img_byte_arr, format="PNG")
-                    img_byte_arr = img_byte_arr.getvalue()
-                    imagem_processada = base64.b64encode(img_byte_arr).decode('ascii')
+            # Converte imagem para base64
+            import io, base64
+            img_bytes = io.BytesIO()
+            img_editada.save(img_bytes, format="PNG")
+            img_bytes = img_bytes.getvalue()
+            imagem_processada = base64.b64encode(img_bytes).decode('utf-8')
 
-                except Exception as e:
-                    erro = f"Erro ao processar imagem: {e}"
+        except Exception as e:
+            erro = f"Erro ao processar a imagem: {e}"
 
-    return render_template("editor_imagem.html", imagem_processada=imagem_processada, erro=erro)
+    return render_template(
+        "editor_imagem.html",
+        erro=erro,
+        filtros=filtros_disponiveis,
+        imagem_processada=imagem_processada
+    )
 
 # ==========================
 # Quiz de Programação

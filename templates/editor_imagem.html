@@ -1,57 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
-    <title>🖼️ Editor de Imagem</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Editor de Imagens</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-<div class="page">
-    <h1>🖼️ Editor de Imagem</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="imagem" accept="image/*" required>
-        
-        <div class="form-group">
-            <label>Filtros:</label>
-            <select name="filtro">
-                <option value="original">Original</option>
-                <option value="blur">Borrado</option>
-                <option value="contorno">Contorno</option>
-                <option value="escala_cinza">Escala de Cinza</option>
-            </select>
+<body class="fundo-editor">
+    <div class="page">
+        <h1>🖼️ Editor de Filtros</h1>
+
+        {% if erro %}
+            <div class="message error">{{ erro }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="imagem">Escolha uma imagem:</label>
+                <input type="file" name="imagem" id="imagem" accept="image/*" required>
+            </div>
+
+            <div class="form-group">
+                <label for="filtro">Escolha um filtro:</label>
+                <select name="filtro" id="filtro">
+                    {% for f in filtros %}
+                        <option value="{{ f }}">{{ f.replace('_', ' ')|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">Aplicar Filtro</button>
+        </form>
+
+        {% if imagem_processada %}
+        <div class="image-container">
+            <h3>Resultado:</h3>
+            <img src="data:image/png;base64,{{ imagem_processada }}" alt="Imagem filtrada">
+            <a href="data:image/png;base64,{{ imagem_processada }}" download="imagem_filtrada.png">📥 Baixar imagem</a>
         </div>
-        
-        <div class="form-group">
-            <label>Brilho:</label>
-            <input type="range" name="brilho" min="0" max="200" value="100">
-        </div>
-        
-        <div class="form-group">
-            <label>Contraste:</label>
-            <input type="range" name="contraste" min="0" max="200" value="100">
-        </div>
-        
-        <div class="form-group">
-            <label>Nitidez:</label>
-            <input type="range" name="nitidez" min="0" max="200" value="100">
-        </div>
-        
-        <div class="botoes-acoes">
-            <button type="submit">Aplicar e Visualizar</button>
-        </div>
-    </form>
-    
-    {% if imagem_processada %}
-    <div class="image-container">
-        <img src="data:image/png;base64,{{ imagem_processada }}" alt="Imagem editada">
-        <a href="data:image/png;base64,{{ imagem_processada }}" download="imagem_editada.png">📥 Baixar Imagem</a>
+        {% endif %}
     </div>
-    {% endif %}
-    
-    {% if erro %}
-    <div class="message error">{{ erro }}</div>
-    {% endif %}
-</div>
 </body>
 </html>

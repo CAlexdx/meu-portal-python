@@ -1,24 +1,41 @@
 # scripts/editor_imagem.py
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 
 def aplicar_filtros(img, filtros=[]):
-    """ Aplica múltiplos filtros pré-definidos na imagem. filtros: lista de strings com nomes dos filtros """
+    """Aplica múltiplos filtros na imagem."""
     for filtro in filtros:
-        if filtro == "blur":
+        if filtro == "preto_branco":
+            img = img.convert("L").convert("RGB")
+        elif filtro == "sepia":
+            sepia = []
+            for i in range(255):
+                r = int(i * 240 / 255)
+                g = int(i * 200 / 255)
+                b = int(i * 145 / 255)
+                sepia.append((r, g, b))
+            img = img.convert("L")
+            img.putpalette(sum(sepia, ()))
+            img = img.convert("RGB")
+        elif filtro == "inverter":
+            img = ImageOps.invert(img.convert("RGB"))
+        elif filtro == "blur":
             img = img.filter(ImageFilter.BLUR)
         elif filtro == "contorno":
             img = img.filter(ImageFilter.CONTOUR)
-        elif filtro == "escala_cinza":
-            img = img.convert("L").convert("RGB")
+        elif filtro == "bordas":
+            img = img.filter(ImageFilter.EDGE_ENHANCE)
         elif filtro == "detalhe":
             img = img.filter(ImageFilter.DETAIL)
-        elif filtro == "borda":
-            img = img.filter(ImageFilter.EDGE_ENHANCE)
-    return img
-
-def ajustar_imagem(img, brilho=1.0, contraste=1.0, nitidez=1.0):
-    """ Ajusta brilho, contraste e nitidez da imagem. """
-    img = ImageEnhance.Brightness(img).enhance(brilho)
-    img = ImageEnhance.Contrast(img).enhance(contraste)
-    img = ImageEnhance.Sharpness(img).enhance(nitidez)
+        elif filtro == "realce":
+            img = ImageEnhance.Contrast(img).enhance(1.5)
+        elif filtro == "saturacao_alta":
+            img = ImageEnhance.Color(img).enhance(1.5)
+        elif filtro == "saturacao_baixa":
+            img = ImageEnhance.Color(img).enhance(0.5)
+        elif filtro == "nitidez":
+            img = ImageEnhance.Sharpness(img).enhance(2.0)
+        elif filtro == "escurecer":
+            img = ImageEnhance.Brightness(img).enhance(0.7)
+        elif filtro == "clarear":
+            img = ImageEnhance.Brightness(img).enhance(1.3)
     return img
