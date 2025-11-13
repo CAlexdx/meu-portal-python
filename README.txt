@@ -77,7 +77,7 @@ O código continua incluído para fins de estudo e demonstração da integraçã
 
 Tecnologias utilizadas:
 Flask (Python)
-HTML, CSS e JavaScript
+HTML, CSS
 
 Autor: Calebe Alves Câmara
 Ano: 2025
