@@ -32,13 +32,98 @@
             <button type="submit">Aplicar Filtro</button>
         </form>
 
+        <!-- Área de pré-visualização (adicionada) -->
+        <div class="image-container">
+            <h3>Pré-visualização:</h3>
+            <img id="preview" src="" alt="Pré-visualização" style="display: none;">
+        </div>
+
         {% if imagem_processada %}
         <div class="image-container">
-            <h3>Resultado:</h3>
+            <h3>Resultado Final:</h3>
             <img src="data:image/png;base64,{{ imagem_processada }}" alt="Imagem filtrada">
             <a href="data:image/png;base64,{{ imagem_processada }}" download="imagem_filtrada.png">📥 Baixar imagem</a>
         </div>
         {% endif %}
     </div>
+
+    <!-- JavaScript para pré-visualização em tempo real -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.querySelector('#imagem');
+            const select = document.querySelector('#filtro');
+            const preview = document.querySelector('#preview');
+
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        applyFilter(); // Aplica o filtro inicial
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            select.addEventListener('change', applyFilter);
+
+            function applyFilter() {
+                const filtro = select.value;
+                let cssFilter = '';
+
+                switch (filtro) {
+                    case 'preto_branco':
+                        cssFilter = 'grayscale(100%)';
+                        break;
+                    case 'sepia':
+                        cssFilter = 'sepia(100%)';
+                        break;
+                    case 'inverter':
+                        cssFilter = 'invert(100%)';
+                        break;
+                    case 'blur':
+                        cssFilter = 'blur(3px)';
+                        break;
+                    case 'contorno':
+                        // Aproximação: alto contraste + grayscale + invert
+                        cssFilter = 'contrast(1000%) brightness(0%) invert(100%)';
+                        break;
+                    case 'bordas':
+                        // Aproximação: alto contraste para realçar bordas
+                        cssFilter = 'contrast(200%)';
+                        break;
+                    case 'detalhe':
+                        // Aproximação: leve aumento de contraste
+                        cssFilter = 'contrast(120%)';
+                        break;
+                    case 'realce':
+                        cssFilter = 'contrast(150%)';
+                        break;
+                    case 'saturacao_alta':
+                        cssFilter = 'saturate(150%)';
+                        break;
+                    case 'saturacao_baixa':
+                        cssFilter = 'saturate(50%)';
+                        break;
+                    case 'nitidez':
+                        // Aproximação: contraste + brilho leve (CSS não tem sharpen exato)
+                        cssFilter = 'contrast(110%) brightness(105%)';
+                        break;
+                    case 'escurecer':
+                        cssFilter = 'brightness(70%)';
+                        break;
+                    case 'clarear':
+                        cssFilter = 'brightness(130%)';
+                        break;
+                    default:
+                        cssFilter = 'none';
+                }
+
+                preview.style.filter = cssFilter;
+            }
+        });
+    </script>
 </body>
-</html>
+    </html>
