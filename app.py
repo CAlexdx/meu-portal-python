@@ -552,6 +552,64 @@ def conversor_medidas_page():
 def arquivos(filename):
     return send_from_directory(OUTPUTS, filename)
 
+# ================== CONTADOR DE VISITAS PURO (só .txt + IP + 24h) ==================
+from datetime import datetime
+import os
+
+ARQUIVO_VISITAS = os.path.join(OUTPUTS, "visitas.txt")
+
+def registrar_visita():
+    # Ignora arquivos estáticos e downloads
+    if request.path.startswith("/static") or request.path.startswith("/outputs") or request.path.startswith("/downloads"):
+        return
+
+    ip = request.remote_addr or "127.0.0.1"
+    hoje = datetime.now().strftime("%Y-%m-%d")
+    linha = f"{ip}|{hoje}\n"
+
+    # Lê todas as linhas existentes
+    linhas_existentes = []
+    if os.path.exists(ARQUIVO_VISITAS):
+        with open(ARQUIVO_VISITAS, "r", encoding="utf-8") as f:
+            linhas_existentes = f.readlines()
+
+    # Verifica se esse IP já foi registrado hoje
+    ja_veio_hoje = any(
+        linha.split("|")[0] == ip and linha.split("|")[1].strip() == hoje
+        for linha in linhas_existentes if "|" in linha
+    )
+
+    # Se não veio hoje, adiciona no arquivo
+    if not ja_veio_hoje:
+        with open(ARQUIVO_VISITAS, "a", encoding="utf-8") as f:
+            f.write(linha)
+
+@app.before_request
+def antes_de_cada_requisicao():
+    registrar_visita()
+
+# Funções para contar
+def total_visitantes_unicos():
+    if not os.path.exists(ARQUIVO_VISITAS):
+        return 0
+    with open(ARQUIVO_VISITAS, "r", encoding="utf-8") as f:
+        ips = {linha.split("|")[0] for linha in f if "|" in linha}
+    return len(ips)
+
+def visitantes_hoje():
+    if not os.path.exists(ARQUIVO_VISITAS):
+        return 0
+    hoje = datetime.now().strftime("%Y-%m-%d")
+    with open(ARQUIVO_VISITAS, "r", encoding="utf-8") as f:
+        return sum(1 for linha in f if hoje in linha)
+
+# Injeta as funções nos templates
+@app.context_processor
+def injetar_contador():
+    return {
+        "total_unicos": total_visitantes_unicos(),
+        "hoje": visitantes_hoje()
+            }
 
 # ==========================
 # Inicialização
