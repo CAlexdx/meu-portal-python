@@ -11,7 +11,16 @@
   <header>
     <img src="{{ url_for('static', filename='image.png') }}" alt="Logo Meu Portal Python">
   </header>
-
+  
+<div class="contador-visitas">
+  <p class="contador-titulo">
+    👥 Já somos <strong class="numero-grande">{{ total_unicos }}</strong> pessoas diferentes!
+  </p>
+  <p class="contador-sub">
+    ({{ hoje }} acessaram hoje) • Contagem única por pessoa a cada 24h
+  </p>
+</div>
+  
   <nav class="menu-horizontal">
     <a href="{{ url_for('calendario_page') }}">📅 Calendário</a> 
     <a href="{{ url_for('conversor_tempo_page') }}">🕒 Conversor de Tempo</a>
