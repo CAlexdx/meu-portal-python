@@ -670,3 +670,42 @@ header img {
     border-radius: var(--radius);
     transition: filter 0.3s ease; /* Suaviza a mudança de filtro */
        }
+/* ================================
+   👥 CONTADOR DE VISITAS (PURO)
+   ================================ */
+.contador-visitas {
+    text-align: center;
+    margin: 40px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #e0f2fe, #f0f8ff);
+    border: 2px solid #2563eb;
+    border-radius: 16px;
+    max-width: 600px;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
+    font-family: Inter, sans-serif;
+}
+
+.contador-titulo {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    color: #1e293b;
+}
+
+.numero-grande {
+    font-size: 42px;
+    font-weight: 800;
+    color: #2563eb;
+    text-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.contador-sub {
+    margin: 0;
+    font-size: 14px;
+    color: #475569;
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    .numero-grande { font-size: 36px; }
+    .contador-visitas { padding: 16px; margin: 30px 15px; }
+}
