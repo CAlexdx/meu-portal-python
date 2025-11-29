@@ -551,7 +551,57 @@ def conversor_medidas_page():
 @app.route("/outputs/<path:filename>")
 def arquivos(filename):
     return send_from_directory(OUTPUTS, filename)
+    
+# ================== CONTADOR CORRIGIDO + CANTO INFERIOR DIREITO ==================
+from datetime import datetime
+import os
 
+ARQUIVO_VISITAS = os.path.join(OUTPUTS, "visitas.txt")
+
+def obter_ip_real():
+    # Pega o IP real do visitante (funciona no Render, Vercel, Railway, etc.)
+    if request.headers.get("X-Forwarded-For"):
+        return request.headers.get("X-Forwarded-For").split(",")[0].strip()
+    elif request.headers.get("X-Real-IP"):
+        return request.headers.get("X-Real-IP")
+    else:
+        return request.remote_addr or "127.0.0.1"
+
+def registrar_visita():
+    if request.path.startswith(("/static", "/outputs", "/downloads", "/favicon")):
+        return
+
+    return
+
+    ip = obter_ip_real()
+    hoje = datetime.now().strftime("%Y-%m-%d")
+    linha = f"{ip}|{hoje}\n"
+
+    linhas = []
+    if os.path.exists(ARQUIVO_VISITAS):
+        with open(ARQUIVO_VISITAS, "r", encoding="utf-8") as f:
+            linhas = f.readlines()
+
+    ja_veio_hoje = any(l.split("|")[0] == ip and l.split("|")[1].strip() == hoje for l in linhas if "|" in l)
+
+    if not ja_veio_hoje:
+        with open(ARQUIVO_VISITAS, "a", encoding="utf-8") as f:
+            f.write(linha)
+
+@app.before_request
+def antes_de_cada_requisicao():
+    registrar_visita()
+
+def total_unicos():
+    if not os.path.exists(ARQUIVO_VISITAS):
+        return 0
+    with open(ARQUIVO_VISITAS, "r", encoding="utf-8") as f:
+        ips = {l.split("|")[0] for l in f if "|" in l}
+    return len(ips)
+
+@app.context_processor
+def injetar_contador():
+    return {"total_unicos": total_unicos()}
 
 # ==========================
 # Inicialização
