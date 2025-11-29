@@ -670,3 +670,56 @@ header img {
     border-radius: var(--radius);
     transition: filter 0.3s ease; /* Suaviza a mudança de filtro */
        }
+
+/* ================================
+   CONTADOR CANTO INFERIOR DIREITO (DISCRETO E LINDO)
+   ================================ */
+.contador-fixo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.contador-caixa {
+    background: rgba(37, 99, 235, 0.95);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    pointer-events: auto;
+    animation: pulsinho 2s infinite;
+}
+
+.contador-icone {
+    font-size: 20px;
+}
+
+.contador-numero {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 6px;
+}
+
+.contador-texto {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+@keyframes pulsinho {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Em telas pequenas, sobe um pouco pra não cobrir botão */
+@media (max-width: 600px) {
+    .contador-fixo { bottom: 80px; }
+   }
