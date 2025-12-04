@@ -1,7 +1,6 @@
 # scripts/conversor.py
 import requests
 
-# API gratuita, sem necessidade de chave para taxas básicas (2025)
 API_URL = "https://api.exchangerate-api.com/v4/latest/USD"
 
 def obter_taxas():
@@ -23,7 +22,6 @@ def converter(valor, de="USD", para="BRL"):
         if not taxas:
             return None
 
-        # Se a moeda de origem não for USD, convertemos primeiro para USD
         if de != "USD":
             if de not in taxas:
                 return None
@@ -31,12 +29,11 @@ def converter(valor, de="USD", para="BRL"):
         else:
             valor_em_usd = valor
 
-        # Depois convertemos de USD para a moeda destino
         if para not in taxas:
             return None
 
         resultado = valor_em_usd * taxas[para]
-        return round(resultado, 4)
+        return resultado  # ← AQUI: sem round!, deixa natural
 
     except (ValueError, TypeError, KeyError):
         return None
