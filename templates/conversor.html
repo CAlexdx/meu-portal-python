@@ -48,10 +48,11 @@
 
     {% if resultado is not none %}
   <div class="resultado success">
-    <h2>
-      {{ valor }} {{ de }} → {{ resultado|float|format("%.10g") }} {{ para }}
-    </h2>
-    <p><small>Taxas atualizadas em tempo real • Fonte: exchangerate-api.com</small></p>
+    <strong>
+      {{ "%.4f"|format(valor) }} {{ de }} → {{ "%.4f"|format(resultado) }} {{ para }}
+    </strong>
+    <br><br>
+    <small>Taxas atualizadas em tempo real • Fonte: exchangerate-api.com</small>
   </div>
 {% endif %}
 
