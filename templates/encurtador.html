@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Encurtador de Links</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🔗 Encurtador de Links</h1>
+
+    <form method="post">
+      <input type="url" name="link" placeholder="Cole seu link aqui" required>
+      <button type="submit">Encurtar</button>
+    </form>
+
+    {% if short %}
+      <div class="resultado message success">
+        <p><b>Link encurtado:</b> <a href="{{ short }}" target="_blank">{{ short }}</a></p>
+      </div>
+    {% endif %}
+
+    {% if erro %}
+      <div class="resultado message error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
+  </div>
+</body>
+</html>

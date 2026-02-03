@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Calculadora</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🧮 Calculadora Básica</h1>
+
+    <div class="calculator-container">
+      <form method="post" class="calculator-form">
+        <input name="a" placeholder="Valor A" required class="input-field" value="{{ a if a else '' }}">
+        <select name="operacao" class="select-field">
+          <option value="soma" {% if operacao == "soma" %}selected{% endif %}>Somar (+)</option>
+          <option value="sub" {% if operacao == "sub" %}selected{% endif %}>Subtrair (−)</option>
+          <option value="mul" {% if operacao == "mul" %}selected{% endif %}>Multiplicar (×)</option>
+          <option value="div" {% if operacao == "div" %}selected{% endif %}>Dividir (÷)</option>
+          <option value="pow" {% if operacao == "pow" %}selected{% endif %}>Potência (a^b)</option>
+        </select>
+        <input name="b" placeholder="Valor B" required class="input-field" value="{{ b if b else '' }}">
+        <button type="submit" class="calculate-button">Calcular</button>
+      </form>
+    
+      {% if resultado is not none %}
+        <div class="resultado success">Resultado: {{ resultado }}</div>
+      {% endif %}
+      {% if erro %}
+        <div class="alerta error">{{ erro }}</div>
+      {% endif %}
+    </div>
+
+    <p><a href="{{ url_for('index') }}">⬅️ Voltar</a></p>
+  </div>
+</body>
+</html>

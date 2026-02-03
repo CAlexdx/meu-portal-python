@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>📘 Calcular Média Escolar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    let materiaCount = 0;
+
+    function addMateria() {
+      const container = document.getElementById("materias");
+      const div = document.createElement("div");
+      div.classList.add("materia-bloco");
+      div.innerHTML = `
+        <input type="text" name="materia_${materiaCount}" placeholder="Nome da matéria" required>
+        <div class="avaliacoes" id="avaliacoes_${materiaCount}">
+          <div class="avaliacao-item">
+            <input type="text" name="tipo_${materiaCount}[]" placeholder="Tipo (Prova, Trabalho...)" required>
+            <input type="number" step="0.01" min="0" max="10" name="nota_${materiaCount}[]" placeholder="Nota (0-10)" required>
+          </div>
+        </div>
+        <button type="button" class="btn-secundario" onclick="addAvaliacao(${materiaCount})">+ Avaliação</button>
+      `;
+      container.appendChild(div);
+      materiaCount++;
+    }
+
+    function addAvaliacao(materiaId) {
+      const avaliacoes = document.getElementById("avaliacoes_" + materiaId);
+      const div = document.createElement("div");
+      div.classList.add("avaliacao-item");
+      div.innerHTML = `
+        <input type="text" name="tipo_${materiaId}[]" placeholder="Tipo (Prova, Trabalho...)" required>
+        <input type="number" step="0.01" min="0" max="10" name="nota_${materiaId}[]" placeholder="Nota (0-10)" required>
+      `;
+      avaliacoes.appendChild(div);
+    }
+  </script>
+</head>
+<body>
+  <div class="page">
+    <h1>📘 Calcular Média Escolar</h1>
+
+    <form method="post">
+      <div id="materias"></div>
+      <div class="botoes-top">
+        <button type="button" onclick="addMateria()">+ Matéria</button>
+        <button type="submit">Calcular</button>
+      </div>
+    </form>
+
+    {% if resultado %}
+      <div class="resultado">
+        <h2>Resultados</h2>
+        {% for materia, dados in resultado.materias.items() %}
+          <h3>{{ materia }} → Média: {{ dados.media }}</h3>
+          <ul>
+            {% for tipo, nota in dados.avaliacoes.items() %}
+              <li>{{ tipo }}: {{ nota }}</li>
+            {% endfor %}
+          </ul>
+        {% endfor %}
+        <h2>📊 Média Geral: {{ resultado.geral }}</h2>
+      </div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
+  </div>
+</body>
+</html>

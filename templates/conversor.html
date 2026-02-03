@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Conversor de Moedas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>Conversor de Moedas</h1>
+
+    <form method="post" class="calculator-form">
+      <input type="number" name="valor" step="0.01" min="0" placeholder="Valor" value="{{ valor or '' }}" required class="input-field">
+
+      <select name="de" class="select-field">
+        <option value="USD" {% if de == 'USD' %}selected{% endif %}>USD - Dólar Americano</option>
+        <option value="BRL" {% if de == 'BRL' %}selected{% endif %}>BRL - Real Brasileiro</option>
+        <option value="EUR" {% if de == 'EUR' %}selected{% endif %}>EUR - Euro</option>
+        <option value="GBP" {% if de == 'GBP' %}selected{% endif %}>GBP - Libra Esterlina</option>
+        <option value="JPY" {% if de == 'JPY' %}selected{% endif %}>JPY - Iene Japonês</option>
+        <option value="CHF" {% if de == 'CHF' %}selected{% endif %}>CHF - Franco Suíço</option>
+        <option value="CAD" {% if de == 'CAD' %}selected{% endif %}>CAD - Dólar Canadense</option>
+        <option value="AUD" {% if de == 'AUD' %}selected{% endif %}>AUD - Dólar Australiano</option>
+        <option value="CNY" {% if de == 'CNY' %}selected{% endif %}>CNY - Yuan Chinês</option>
+        <option value="ARS" {% if de == 'ARS' %}selected{% endif %}>ARS - Peso Argentino</option>
+        <option value="MXN" {% if de == 'MXN' %}selected{% endif %}>MXN - Peso Mexicano</option>
+      </select>
+
+      <span style="font-size: 1.5rem; padding: 0 10px;">→</span>
+
+      <select name="para" class="select-field">
+        <option value="BRL" {% if para == 'BRL' %}selected{% endif %}>BRL - Real Brasileiro</option>
+        <option value="USD" {% if para == 'USD' %}selected{% endif %}>USD - Dólar Americano</option>
+        <option value="EUR" {% if para == 'EUR' %}selected{% endif %}>EUR - Euro</option>
+        <option value="GBP" {% if para == 'GBP' %}selected{% endif %}>GBP - Libra Esterlina</option>
+        <option value="JPY" {% if para == 'JPY' %}selected{% endif %}>JPY - Iene Japonês</option>
+        <option value="CHF" {% if para == 'CHF' %}selected{% endif %}>CHF - Franco Suíço</option>
+        <option value="CAD" {% if para == 'CAD' %}selected{% endif %}>CAD - Dólar Canadense</option>
+        <option value="AUD" {% if para == 'AUD' %}selected{% endif %}>AUD - Dólar Australiano</option>
+        <option value="CNY" {% if para == 'CNY' %}selected{% endif %}>CNY - Yuan Chinês</option>
+        <option value="ARS" {% if para == 'ARS' %}selected{% endif %}>ARS - Peso Argentino</option>
+        <option value="MXN" {% if para == 'MXN' %}selected{% endif %}>MXN - Peso Mexicano</option>
+      </select>
+
+      <button type="submit" class="calculate-button">Converter</button>
+    </form>
+
+    {% if resultado is not none %}
+<div class="resultado success">
+    <strong>
+        {# Formata para 2 casas decimais e troca ponto por vírgula para o usuário #}
+        {{ "%.2f"|format(valor)|replace('.', ',') }} {{ de }} 
+        <span style="color: var(--accent);">→</span> 
+        {{ "%.2f"|format(resultado)|replace('.', ',') }} {{ para }}
+    </strong>
+    <br><br>
+    <small style="opacity: 0.7;">Taxas atualizadas em tempo real • Fonte: exchangerate-api.com</small>
+</div>
+{% endif %}
+
+    {% if erro %}
+      <div class="alerta error">
+        {{ erro }}
+      </div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}" class="voltar">Voltar ao início</a></p>
+  </div>
+</body>
+          </html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Calendário</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>📅 Calendário</h1>
+
+    <form method="post">
+      <label>Ano: <input type="number" name="ano" value="{{ ano }}" min="1900" max="2100" required></label>
+      <label>Mês: <input type="number" name="mes" value="{{ mes }}" min="1" max="12" required></label>
+      <button type="submit">Gerar</button>
+    </form>
+
+    {% if dias_do_mes %} {# Agora estamos usando 'dias_do_mes' #}
+      <h2>{{ MESES_PT[mes-1] }} {{ ano }}</h2> {# Exibe o nome do mês e ano #}
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            {% for dia_semana in dias_semana %} {# Iteramos sobre os nomes dos dias da semana #}
+              <th>{{ dia_semana }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for semana in dias_do_mes %} {# Iteramos sobre as semanas #}
+            <tr>
+              {% for dia in semana %} {# Iteramos sobre os dias da semana #}
+                <td {% if dia in feriados %}class="feriado"{% endif %}>
+                  {{ dia }}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if feriados %}
+      <h3>🎉 Feriados:</h3>
+      <ul>
+        {% for dia, nome in feriados.items() %}
+          <li>{{ dia }} - {{ nome }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅️ Voltar</a></p>
+  </div>
+</body>
+</html>

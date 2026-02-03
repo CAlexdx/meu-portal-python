@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Quiz de Programação</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>💻 Quiz de Programação</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if resultado %} {# Este é o feedback de "Certo!" ou "Errado!" #}
+      <div class="resultado">{{ resultado }}</div>
+    {% endif %}
+
+    <form method="post" class="quiz-form">
+      <p class="pergunta"><b>{{ pergunta['pergunta'] }}</b></p>
+      <div class="quiz-opcoes">
+        {% for opcao in pergunta['opcoes'] %}
+          <label>
+            <input type="radio" name="resposta" value="{{ opcao }}" required> {{ opcao }}
+          </label>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="correta" value="{{ pergunta['resposta'] }}">
+      <input type="hidden" name="pergunta_id" value="{{ pergunta['id'] }}">
+      <button type="submit">Responder e Próxima</button>
+    </form>
+
+    <p><a href="{{ url_for('iniciar_quiz') }}">Reiniciar Quiz</a></p> {# Link para reiniciar o quiz #}
+    <p><a href="{{ url_for('index') }}">Voltar para o Início</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,725 @@
+/* ================================ 
+   🌐 PORTAL PYTHON - ESTILO GERAL
+   ================================ */
+
+   :root {
+    --bg: #f6f7fb;
+    --title: #222;
+    --accent: #2563eb;
+    --radius: 10px;
+    --gap: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--title);
+    padding: 20px;
+}
+
+/* ================================
+   🔝 CABEÇALHO
+   ================================ */
+header {
+    text-align: center;
+    margin-bottom: 25px;
+    display: block; 
+}
+header h1 {
+    font-size: 28px;
+    font-weight: 700;
+}
+header img {
+    max-width: 400px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ================================
+   🧭 MENU HORIZONTAL
+   ================================ */
+.menu-horizontal {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--gap);
+    max-width: 1200px;
+    margin: 20px auto;
+}
+.menu-horizontal a {
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border: 1px solid #ddd;
+    background: #fff;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    transition: 0.2s;
+}
+.menu-horizontal a:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Ajuste responsivo */
+@media (max-width: 1024px) {
+    .menu-horizontal { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+    .menu-horizontal { grid-template-columns: repeat(2, 1fr); }
+    header h1 { font-size: 22px; }
+}
+
+/* ================================
+   📄 PÁGINAS INTERNAS
+   ================================ */
+.page {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-align: center;
+}
+.page h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+.page form {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.page input,
+.page select,
+.page button,
+.page textarea {
+    padding: 10px 14px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+.page textarea {
+    width: 100%;
+    resize: vertical;
+}
+.page button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.page button:hover {
+    background: #1d4ed8;
+}
+
+/* ================================
+   🗓️ CALENDÁRIO (NOVAS REGRAS OU AJUSTES)
+   ================================ */
+.calendar-table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 500px;
+}
+
+.calendar-table th, .calendar-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.calendar-table th {
+    background-color: #f2f2f2;
+}
+
+.feriado {
+    background-color: #ffe0e0;
+    font-weight: bold;
+    color: #c00;
+}
+
+.page ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.page ul li {
+    margin-bottom: 5px;
+}
+
+.page p a {
+    margin-top: 20px;
+}
+
+/* Estilos para a Calculadora */
+.calculator-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.calculator-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+}
+
+.input-field,
+.select-field {
+    flex-grow: 1;
+    min-width: 120px;
+    padding: 12px 15px;
+    border-radius: var(--radius);
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.input-field:focus,
+.select-field:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+.calculate-button {
+    flex-grow: 1;
+    min-width: 100px;
+    padding: 12px 15px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.calculate-button:hover {
+    background: #1e40af;
+}
+
+/* Estilo para a mensagem de resultado */
+.resultado.success {
+    background-color: #e9f5e9;
+    border: 1px solid #c8e6c9;
+    color: #1b5e20;
+    padding: 12px;
+    border-radius: var(--radius);
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.alerta.error {
+    background-color: #fcebeb;
+    border: 1px solid #fbcaca;
+    color: #c62828;
+    padding: 12px;
+    border-radius: var(--radius);
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Resposta para telas pequenas */
+@media (max-width: 600px) {
+    .calculator-form {
+        flex-direction: column;
+    }
+}
+
+/* ================================
+   📘 MÉDIA ESCOLAR
+   ================================ */
+.materia-bloco {
+    border: 1px solid #ddd;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+.avaliacoes div {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+.botoes-top {
+    margin: 12px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.botoes-top button {
+    flex-shrink: 0;
+    width: auto;
+}
+
+/* ================================
+   👥 ALERTAS / ERROS
+   ================================ */
+.alerta.error {
+    color: red;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+/* ================================
+   💰 ORÇAMENTO / JUROS COMPOSTOS
+   ================================ */
+.resumo-detalhes {
+    margin-top: 15px;
+    text-align: left;
+}
+.resumo-detalhes h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+    color: var(--accent);
+}
+.resumo-detalhes ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+.resumo-detalhes li {
+    padding: 3px 0;
+    border-bottom: 1px dashed #eee;
+    display: flex;
+    justify-content: space-between;
+}
+.resumo-detalhes li:last-child {
+    border-bottom: none;
+}
+
+/* ================================
+   🎯 QUIZ
+   ================================ */
+.quiz-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.quiz-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+.quiz-opcoes label {
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    cursor: pointer;
+    background: #f9fafb;
+    transition: 0.2s;
+}
+.quiz-opcoes input {
+    margin-right: 6px;
+}
+.quiz-opcoes label:hover {
+    background: #eef2ff;
+}
+
+/* ============================
+   🌍 MÓDULO MAPA TURÍSTICO
+   ============================ */
+#map {
+    height: 80vh;
+    width: 100%;
+    border: 2px solid var(--accent);
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.mapa-intro {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--title);
+    margin-bottom: 10px;
+}
+
+.popup h3 {
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+.popup p {
+    margin: 3px 0;
+    font-size: 0.9rem;
+}
+
+.voltar {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* ================================
+   📷 CONVERSOR DE IMAGEM
+   ================================ */
+.botoes-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+.botoes-acoes button {
+    flex: none;
+    min-width: 120px;
+}
+.image-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.image-container img {
+    max-width: 100%;
+    max-height: 400px;
+    height: auto;
+    display: block;
+}
+.page input[type="file"],
+.page select,
+.page button[type="submit"] {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 16px;
+}
+.page button[type="submit"] {
+    background-color: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.page button[type="submit"]:hover {
+    background-color: #1c4ed8;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+.message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: var(--radius);
+    font-weight: 500;
+}
+.message.error {
+    background-color: #fee2e2;
+    color: red;
+}
+.message.success {
+    background-color: #d1fae5;
+    color: green;
+}
+
+/* ================================
+   🖼️ RESULTADOS E LINKS
+   ================================ */
+.resultado, .page pre {
+    margin-top: 20px;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 6px;
+    font-size: 17px;
+    text-align: center;
+    word-wrap: break-word;
+}
+.page a {
+    margin-top: 20px;
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+}
+.page a:hover { text-decoration: underline; }
+
+/* ================================
+   📱 RESPONSIVIDADE EXTRA
+   ================================ */
+@media (max-width: 600px) {
+    header h1 { font-size: 22px; }
+    .menu-horizontal { flex-direction: column; }
+    .menu-horizontal a { text-align: center; }
+    .page { padding: 15px; }
+    .quiz-opcoes { flex-direction: column; align-items: stretch; }
+}
+
+/* ================================
+   🚗 CONSUMO DE COMBUSTÍVEL
+   ================================ */
+   .combustivel-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.combustivel-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.combustivel-form label {
+    font-weight: 600;
+    color: var(--title);
+}
+
+.combustivel-form .input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.combustivel-form input[type="number"] {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid #ccc;
+    font-size: 16px;
+    text-align: right;
+}
+
+.combustivel-form input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+.combustivel-form span {
+    color: #555;
+    font-weight: 500;
+    min-width: 40px;
+}
+
+.combustivel-form .calculate-button {
+    margin-top: 10px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.combustivel-form .calculate-button:hover {
+    background-color: #1e40af;
+}
+
+.combustivel-form .opcional label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.resultado.success {
+    margin-top: 20px;
+    background-color: #e9f5e9;
+    border: 1px solid #c8e6c9;
+    color: #1b5e20;
+    padding: 12px;
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+
+/* ================================
+   🕒 CONVERSOR DE TEMPO
+   ================================ */
+.conversor-tempo-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: var(--radius);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.conversor-tempo-form label {
+    font-weight: 500;
+    width: 100%;
+    text-align: left;
+}
+
+.conversor-tempo-form input,
+.conversor-tempo-form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.conversor-tempo-form button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.conversor-tempo-form button:hover {
+    background: #1d4ed8;
+}
+
+/* ================================
+   🗺️ MAPA TURÍSTICO - EXPANDIDO
+   ================================ */
+.mapa-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: var(--radius);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mapa-info h2 {
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.mapa-info ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+}
+
+.mapa-info li {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mapa-info li:last-child {
+    border-bottom: none;
+}
+
+.mapa-info strong {
+    color: var(--accent);
+}
+
+
+/* Responsividade para formulários */
+@media (max-width: 600px) {
+    .combustivel-form,
+    .conversor-tempo-form {
+        width: 100%;
+        padding: 15px;
+    }
+}
+/* ================================
+   🖼️ PRÉ-VISUALIZAÇÃO EDITOR
+   ================================ */
+#preview {
+    max-width: 100%;
+    max-height: 300px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    transition: filter 0.3s ease; /* Suaviza a mudança de filtro */
+       }
+
+/* ================================
+   CONTADOR CANTO INFERIOR DIREITO (DISCRETO E LINDO)
+   ================================ */
+.contador-fixo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.contador-caixa {
+    background: rgba(37, 99, 235, 0.95);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    pointer-events: auto;
+    animation: pulsinho 2s infinite;
+}
+
+.contador-icone {
+    font-size: 20px;
+}
+
+.contador-numero {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 6px;
+}
+
+.contador-texto {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+@keyframes pulsinho {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Em telas pequenas, sobe um pouco pra não cobrir botão */
+@media (max-width: 600px) {
+    .contador-fixo { bottom: 80px; }
+   }

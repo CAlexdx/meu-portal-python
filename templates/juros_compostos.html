@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>💰 Simulador de Juros Compostos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>💰 Simulador de Juros Compostos</h1>
+
+    <form method="post">
+      <div class="form-group">
+        <label>Valor inicial (R$)</label>
+        <input type="number" name="capital_inicial" step="0.01" min="0" required value="{{ request.form.get('capital_inicial', '') }}">
+      </div>
+      <div class="form-group">
+        <label>Valor mensal adicional (R$) - opcional</label>
+        <input type="number" name="aporte_mensal" step="0.01" min="0" value="{{ request.form.get('aporte_mensal', '0') }}">
+      </div>
+      <div class="form-group">
+        <label>Taxa de juros anual (%)</label>
+        <input type="number" name="taxa_juros_anual" step="0.01" min="0" required value="{{ request.form.get('taxa_juros_anual', '') }}">
+      </div>
+      <div class="form-group">
+        <label>Período</label>
+        <input type="number" name="tempo" step="1" min="0" required value="{{ request.form.get('tempo', '') }}">
+        <select name="periodo">
+          <option value="meses" {% if request.form.get('periodo') == 'meses' %}selected{% endif %}>Meses</option>
+          <option value="anos" {% if request.form.get('periodo') == 'anos' %}selected{% endif %}>Anos</option>
+        </select>
+      </div>
+      <button type="submit">Calcular</button>
+    </form>
+
+    {% if resultado %}
+      <div class="message success">
+        <b>Valor total final:</b> R$ {{ resultado.montante_final }}<br>
+        <b>Valor total investido:</b> R$ {{ resultado.total_investido }}<br>
+        <b>Total em juros:</b> R$ {{ resultado.total_juros }}
+      </div>
+    {% endif %}
+
+    {% if erro %}
+      <div class="message error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
+  </div>
+</body>
+</html>

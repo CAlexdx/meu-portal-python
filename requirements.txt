@@ -1,0 +1,10 @@
+flask
+pyqrcode
+pillow
+pytubefix
+requests
+pypng
+werkzeug
+holidays
+deep-translator
+gunicorn

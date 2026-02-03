@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>💰 Orçamento Financeiro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>💰 Orçamento Financeiro</h1>
+
+    <form method="post">
+      <div class="form-group">
+        <label>Receitas:</label>
+        <textarea name="receitas" rows="5" placeholder="Ex: Salário: 3000&#10;Freela: 500" required>{{ request.form['receitas'] if request.form else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Despesas:</label>
+        <textarea name="despesas" rows="5" placeholder="Ex: Aluguel: 1500&#10;Mercado: 400" required>{{ request.form['despesas'] if request.form else '' }}</textarea>
+      </div>
+      <button type="submit">Calcular Orçamento</button>
+    </form>
+
+    {% if resumo %}
+      <div class="resultado">
+        <p><b>Total Receitas:</b> R$ {{ '{:,.2f}'.format(resumo.total_receitas).replace(',', 'X').replace('.', ',').replace('X', '.') }}</p>
+        <p><b>Total Despesas:</b> R$ {{ '{:,.2f}'.format(resumo.total_despesas).replace(',', 'X').replace('.', ',').replace('X', '.') }}</p>
+        <p><b>Saldo Final:</b> R$ {{ '{:,.2f}'.format(resumo.saldo).replace(',', 'X').replace('.', ',').replace('X', '.') }}</p>
+        <p><b>Situação Geral:</b>
+          <span style="font-weight: bold; color: {% if resumo.saldo >= 0 %}green{% else %}red{% endif %}">{{ resumo.status }}</span>
+        </p>
+
+        <div class="resumo-detalhes">
+          <h3>Receitas:</h3>
+          {% if resumo.receitas %}
+          <ul>
+            {% for desc, val in resumo.receitas %}
+              <li><span>{{ desc }}</span> <span>R$ {{ '{:,.2f}'.format(val).replace(',', 'X').replace('.', ',').replace('X', '.') }}</span></li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>Nenhuma receita detalhada.</p>
+          {% endif %}
+
+          <h3>Despesas:</h3>
+          {% if resumo.despesas %}
+          <ul>
+            {% for desc, val, pct in resumo.percentuais_despesas %}
+              <li><span>{{ desc }}</span> <span>R$ {{ '{:,.2f}'.format(val).replace(',', 'X').replace('.', ',').replace('X', '.') }} ({{ pct }}%)</span></li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>Nenhuma despesa detalhada.</p>
+          {% endif %}
+        </div>
+
+        <p class="gerado-em" style="font-size: 0.8em; color: #777;">Gerado em: {{ resumo.gerado_em }}</p>
+      </div>
+    {% endif %}
+
+    {% if erro %}
+      <div class="message error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
+  </div>
+</body>
+</html>

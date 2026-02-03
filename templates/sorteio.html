@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>🎲 Sorteio Simples</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🎲 Sorteio Simples</h1>
+    <form method="post">
+      <textarea name="nomes" rows="4" cols="40" placeholder="Digite nomes separados por vírgula" required></textarea>
+      <button type="submit">Sortear</button>
+    </form>
+
+    {% if resultado %}
+      <div class="resultado">{{ resultado }}</div>
+    {% endif %}
+
+    {% if erro %}
+      <div class="alerta error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
+  </div>
+</body>
+</html>

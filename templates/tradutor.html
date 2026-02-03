@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>🌍 Tradutor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🌍 Tradutor Simples</h1>
+    <form method="post">
+      <textarea name="texto" rows="6" placeholder="Digite o texto para traduzir (ex: 'Olá, mundo!' para testar)..." required>{{ texto_original }}</textarea>
+      
+      <label for="target-lang">Traduzir para:</label>
+      <select name="target" id="target-lang">
+        <option value="pt" {% if target_lang_selected == 'pt' %}selected{% endif %}>Português (BR)</option>
+        <option value="en" {% if target_lang_selected == 'en' %}selected{% endif %}>Inglês</option>
+        <option value="es" {% if target_lang_selected == 'es' %}selected{% endif %}>Espanhol</option>
+        <option value="fr" {% if target_lang_selected == 'fr' %}selected{% endif %}>Francês</option>
+        <option value="de" {% if target_lang_selected == 'de' %}selected{% endif %}>Alemão</option>
+        <option value="it" {% if target_lang_selected == 'it' %}selected{% endif %}>Italiano</option>
+        <option value="ja" {% if target_lang_selected == 'ja' %}selected{% endif %}>Japonês</option>
+        <option value="zh-CN" {% if target_lang_selected == 'zh-CN' %}selected{% endif %}>Chinês (Simplificado)</option>
+        <option value="ru" {% if target_lang_selected == 'ru' %}selected{% endif %}>Russo</option>
+        <option value="ar" {% if target_lang_selected == 'ar' %}selected{% endif %}>Árabe</option>
+        <option value="nl" {% if target_lang_selected == 'nl' %}selected{% endif %}>Holandês</option>
+      </select>
+      <button type="submit">Traduzir</button>
+    </form>
+
+    {% if traducao %}
+      <div class="resultado"><b>Tradução:</b> {{ traducao }}</div>
+    {% endif %}
+
+    {% if erro %}
+      <div class="alerta error">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Conversor de Temperatura</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>🌡️ Conversor de Temperatura</h1>
+
+    <form method="post">
+      <input type="number" name="valor" step="0.01" placeholder="Temperatura" required>
+
+      <select name="de">
+        <option value="C">Celsius (°C)</option>
+        <option value="F">Fahrenheit (°F)</option>
+        <option value="K">Kelvin (K)</option>
+      </select>
+
+      <select name="para">
+        <option value="C">Celsius (°C)</option>
+        <option value="F">Fahrenheit (°F)</option>
+        <option value="K">Kelvin (K)</option>
+      </select>
+
+      <button type="submit">Converter</button>
+    </form>
+
+    {% if resultado %}
+      <div class="resultado">Resultado: {{ resultado }}</div>
+    {% endif %}
+    {% if erro %}
+      <div class="resultado" style="color:red;">{{ erro }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅️ Voltar</a></p>
+  </div>
+</body>
+</html>

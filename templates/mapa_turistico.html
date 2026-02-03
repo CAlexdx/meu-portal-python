@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Mapa Turístico Global</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="page">
+    <h1>🌍 Mapa Turístico Global</h1>
+    <p class="mapa-intro">Explore o mundo e descubra curiosidades sobre pontos turísticos famosos.</p>
+
+    <div id="map"></div>
+
+    <script>
+      const map = L.map('map').setView([10, 0], 2);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 18,
+      }).addTo(map);
+
+      fetch("/pontos_turisticos")
+        .then(response => response.json())
+        .then(pontos => {
+          pontos.forEach(p => {
+            const marker = L.marker(p.coordenadas).addTo(map);
+            marker.bindPopup(`
+              <div class="popup">
+                <h3>${p.nome}</h3>
+                <p><strong>${p.cidade}, ${p.pais}</strong></p>
+                <p>${p.descricao}</p>
+                <p><em>${p.curiosidade}</em></p>
+              </div>
+            `);
+          });
+        });
+    </script>
+
+    <p><a href="{{ url_for('index') }}" class="voltar">⬅️ Voltar</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Clima Global</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <h1>☁️ Clima Global</h1>
+    <form method="post">
+      <input type="text" name="cidade" placeholder="Digite o nome da cidade..." value="{{ cidade }}">
+      <button type="submit">Buscar</button>
+    </form>
+
+    {% if dados %}
+      {% if dados.erro %}
+        <p class="erro">{{ dados.erro }}</p>
+      {% else %}
+        <h2>{{ dados.cidade }}</h2>
+        <p><b>Hora local:</b> {{ dados.hora_local }}</p>
+        <p><b>Temperatura:</b> {{ dados.temperatura }} °C</p>
+        <p><b>Vento:</b> {{ dados.vento }} km/h</p>
+        <p>{{ dados.descricao }}</p>
+
+        {% if dados.previsao %}
+          <h3>Previsão dos próximos dias</h3>
+          <table>
+            <tr>
+              <th>Data</th>
+              <th>Máx (°C)</th>
+              <th>Mín (°C)</th>
+              <th>Chuva (mm)</th>
+            </tr>
+            {% for dia in dados.previsao %}
+            <tr>
+              <td>{{ dia.data }}</td>
+              <td>{{ dia.max }}</td>
+              <td>{{ dia.min }}</td>
+              <td>{{ dia.chuva }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">⬅️ Voltar</a></p>
+  </div>
+</body>
+</html>

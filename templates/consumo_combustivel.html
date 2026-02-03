@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cálculo do Combustível</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page">
+        <h1>🚗 Cálculo do Combustível</h1>
+
+        <form method="POST">
+            <label>
+                Distância percorrida (ida) <br>
+                <input type="number" name="distancia" step="any" placeholder="0" required> km
+            </label>
+
+            <label class="checkbox">
+                <input type="checkbox" name="volta"> Adicionar o caminho de volta (opcional)
+            </label>
+
+            <label>
+                Consumo médio do veículo <br>
+                <input type="number" name="consumo" step="any" placeholder="0" required> km / ℓ
+            </label>
+
+            <label>
+                Preço por litro <br>
+                R$ <input type="number" name="preco" step="any" placeholder="0,00" required> por ℓ
+            </label>
+
+            <button type="submit">Calcular</button>
+        </form>
+
+        {% if resultado %}
+        <div class="resultado {{ 'success' if not erro else 'error' }}">
+            {{ resultado or erro }}
+        </div>
+        {% endif %}
+
+        <p><a href="{{ url_for('index') }}">⬅️ Voltar</a></p>
+    </div>
+</body>
+</html>
