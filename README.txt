@@ -73,6 +73,13 @@ Isso impede o funcionamento do módulo de download de vídeos na versão online 
 Essa restrição é comum em serviços de hospedagem e tem o objetivo de evitar abusos de rede ou possíveis violações de direitos autorais.
 O código continua incluído para fins de estudo e demonstração da integração com a biblioteca pytubefix.
 
+ SOLUÇÃO DE PROBLEMAS (TROUBLESHOOTING)
+Se ao rodar o comando python app.py você receber o erro:
+Foi feita uma tentativa de acesso a um soquete de uma maneira que é proibida pelas permissões de acesso
+Isso significa que a porta 5000 está ocupada(no arquivo app.py). Para resolver, altere a porta no app.py ou execute:
+flask run --port=8000
+
+
 📚 INFORMAÇÕES TÉCNICAS
 
 Tecnologias utilizadas:

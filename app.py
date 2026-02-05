@@ -40,12 +40,12 @@ def allowed_file(filename):
 def index():
     return render_template("index.html")
 
-########################## visitas
+######################### visitas
 stats_dados = {
     "total_visitas": 0
 }
 
-# Rota para o JavaScript consultar o número em tempo real
+# Rota para o JavaScript consultar o número em tempo real(procurar uma outra maneira n usando Java)
 @app.route("/api/stats")
 def api_stats():
     return jsonify({
