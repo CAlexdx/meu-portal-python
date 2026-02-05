@@ -6,63 +6,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<div class="contador-fixo">
-  <div class="contador-caixa">
-      <span class="contador-icone">👥</span>
-      <span id="contagem-total" class="contador-numero">{{ total_acessos }}</span>
-      <span class="contador-texto">acessos</span>
-  </div>
-</div>
-
-<script>
-  // Função que busca o valor atualizado no Flask sem dar F5
-  function atualizarContador() {
-      fetch('/api/stats')
-          .then(response => response.json())
-          .then(data => {
-              const elemento = document.getElementById('contagem-total');
-              if (elemento) {
-                  elemento.innerText = data.total;
-              }
-          })
-          .catch(err => console.error("Erro ao atualizar contador:", err));
-  }
-
-  // Executa a cada 7 segundos
-  setInterval(atualizarContador, 7000);
-</script>
 <body class="fundo-principal">
-  
+
+  <div class="contador-fixo">
+    <div class="contador-caixa">
+        <span class="contador-icone">👥</span>
+        <span id="contagem-total" class="contador-numero">{{ total_acessos }}</span>
+        <span class="contador-texto">acessos</span>
+    </div>
+  </div>
+
   <header>
     <img src="{{ url_for('static', filename='image.png') }}" alt="Logo Meu Portal Python">
   </header>
-  
-  
-  <nav class="menu-horizontal">
-    <a href="{{ url_for('calendario_page') }}">📅 Calendário</a> 
-    <a href="{{ url_for('conversor_tempo_page') }}">🕒 Conversor de Tempo</a>
-    <a href="{{ url_for('calculadora_page') }}">🧮 Calculadora</a>
-    <a href="{{ url_for('clima_page') }}">☀️ Clima</a>
-    <a href="{{ url_for('temperatura_page') }}">🌡️ Temperatura</a>
-    <a href="{{ url_for('imc_page') }}">⚖️ IMC</a>
-    <a href="{{ url_for('youtube_page') }}">▶️ YouTube</a>
-    <a href="{{ url_for('encurtador_page') }}">🔗 Encurtador</a>
-    <a href="{{ url_for('qrcode_page') }}">🔳 QR Code</a>
-    <a href="{{ url_for('editor_page') }}">🖼️ Editor</a>
-    <a href="{{ url_for('texto_page') }}">📝 Texto</a>
-    <a href="{{ url_for('media_page') }}">📘 Média Escolar</a>
-    <a href="{{ url_for('mapa_turistico_view') }}">🗺️ Mapa Turístico</a>
-    <a href="{{ url_for('tradutor_page') }}">🌍 Tradutor</a>
-    <a href="{{ url_for('conversor_page') }}">💱 Conversor Moedas</a>
-    <a href="{{ url_for('orcamento_page') }}">💰 Orçamento</a>
-    <a href="{{ url_for('consumo_combustivel_page') }}">🚗 Consumo de Combustível</a>
-    <a href="{{ url_for('juros_compostos_page') }}">📈 Juros Compostos</a>
-    <a href="{{ url_for('sorteio_page') }}">🎲 Sorteio</a>
-    <a href="{{ url_for('equipes_page') }}">👥 Equipes</a>
-    <a href="{{ url_for('quiz_page') }}">❓ Quiz</a>
-    <a href="{{ url_for('senhas_page') }}">🔑 Senhas</a>
-    <a href="{{ url_for('conversor_medidas_page') }}">⚙️ Conversor de Medidas</a>
-  </nav>
-      </div>
+
+  <main>
+    <nav class="menu-horizontal">
+      <a href="{{ url_for('calendario_page') }}">📅 Calendário</a> 
+      <a href="{{ url_for('conversor_tempo_page') }}">🕒 Conversor de Tempo</a>
+      <a href="{{ url_for('calculadora_page') }}">🧮 Calculadora</a>
+      <a href="{{ url_for('clima_page') }}">☀️ Clima</a>
+      <a href="{{ url_for('temperatura_page') }}">🌡️ Temperatura</a>
+      <a href="{{ url_for('imc_page') }}">⚖️ IMC</a>
+      <a href="{{ url_for('youtube_page') }}">▶️ YouTube</a>
+      <a href="{{ url_for('encurtador_page') }}">🔗 Encurtador</a>
+      <a href="{{ url_for('qrcode_page') }}">🔳 QR Code</a>
+      <a href="{{ url_for('editor_page') }}">🖼️ Editor</a>
+      <a href="{{ url_for('texto_page') }}">📝 Texto</a>
+      <a href="{{ url_for('media_page') }}">📘 Média Escolar</a>
+      <a href="{{ url_for('mapa_turistico_view') }}">🗺️ Mapa Turístico</a>
+      <a href="{{ url_for('tradutor_page') }}">🌍 Tradutor</a>
+      <a href="{{ url_for('conversor_page') }}">💱 Conversor Moedas</a>
+      <a href="{{ url_for('orcamento_page') }}">💰 Orçamento</a>
+      <a href="{{ url_for('consumo_combustivel_page') }}">🚗 Consumo de Combustível</a>
+      <a href="{{ url_for('juros_compostos_page') }}">📈 Juros Compostos</a>
+      <a href="{{ url_for('sorteio_page') }}">🎲 Sorteio</a>
+      <a href="{{ url_for('equipes_page') }}">👥 Equipes</a>
+      <a href="{{ url_for('quiz_page') }}">❓ Quiz</a>
+      <a href="{{ url_for('senhas_page') }}">🔑 Senhas</a>
+      <a href="{{ url_for('conversor_medidas_page') }}">⚙️ Conversor de Medidas</a>
+    </nav>
+  </main>
+
+  <footer style="text-align: center; padding: 20px; opacity: 0.6;">
+    <a href="{{ url_for('admin_panel') }}" style="text-decoration: none; color: inherit; font-size: 0.8em;">⚙️ Área Restrita</a>
+  </footer>
+
+  <script>
+    function atualizarContador() {
+        fetch('/api/stats')
+            .then(response => response.json())
+            .then(data => {
+                const elemento = document.getElementById('contagem-total');
+                if (elemento) {
+                    elemento.innerText = data.total;
+                }
+            })
+            .catch(err => console.error("Erro ao atualizar contador:", err));
+    }
+
+    // Executa a cada 7 segundos para manter os números frescos
+    setInterval(atualizarContador, 7000);
+  </script>
+
 </body>
 </html>

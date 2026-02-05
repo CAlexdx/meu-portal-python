@@ -8,3 +8,4 @@ werkzeug
 holidays
 deep-translator
 gunicorn
+python-dotenv

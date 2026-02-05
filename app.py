@@ -1,18 +1,22 @@
 import os
 import io
 import base64
+import json
 from uuid import uuid4
+from functools import wraps
+from dotenv import load_dotenv  # Importante para ler o arquivo .env
 
 from flask import Flask, render_template, jsonify, request, send_from_directory, flash, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from PIL import Image, UnidentifiedImageError
+
+# Scripts do projeto
 from scripts.tradutor import traduzir
 from scripts.consumo_combustivel import calcular_consumo_medio
 from scripts.calendario import gerar_calendario, MESES_PT, DIAS_PT
 from scripts.conversor_tempo import converter_tempo
 from scripts.conversor_medidas import converter_medida
 
-# Imports dos módulos
 from scripts import (
     calendario, conversor_medidas, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
@@ -20,75 +24,126 @@ from scripts import (
     clima
 )
 
-
-
-# Configuração básica
+# ==========================================
+# 1. CONFIGURAÇÃO BÁSICA DO APP
+# ==========================================
 app = Flask(__name__)
-app.secret_key = "segredo"
+app.secret_key = "segredo" # Idealmente, coloque isso no .env também futuramente
 OUTPUTS = "outputs"
 os.makedirs(OUTPUTS, exist_ok=True)
 
-# Extensões permitidas para upload de imagens
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# ==========================================
+# 2. SISTEMA DE SEGURANÇA (ADMIN)
+# ==========================================
+
+# Carrega as variáveis do arquivo .env (se existir localmente)
+load_dotenv()
+
+# Tenta pegar do sistema (Render/.env). Se não achar, usa o padrão "admin"/"1234"
+ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
+ADMIN_PASS = os.environ.get("ADMIN_PASS", "1234")
+
+# Decorador que protege a rota
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        # Verifica se o usuário e senha batem com o configurado no sistema
+        if auth and auth.username == ADMIN_USER and auth.password == ADMIN_PASS:
+            return f(*args, **kwargs)
+        # Se errar, pede login de novo
+        return ('Acesso Negado. Login necessário.', 401, 
+                {'WWW-Authenticate': 'Basic realm="Login Requerido"'})
+    return decorated
+
+# ==========================================
+# 3. SISTEMA DE ESTATÍSTICAS (JSON)
+# ==========================================
+
+# Função para ler o arquivo JSON
+def carregar_stats():
+    try:
+        if os.path.exists('stats.json'):
+            with open('stats.json', 'r', encoding='utf-8') as f:
+                return json.load(f)
+        # Se não existir, cria o padrão zerado
+        return {"total": 0, "ferramentas": {}}
+    except:
+        return {"total": 0, "ferramentas": {}}
+
+# Função para salvar no arquivo JSON
+def salvar_stats(dados):
+    try:
+        with open('stats.json', 'w', encoding='utf-8') as f:
+            json.dump(dados, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(f"Erro ao salvar stats: {e}")
+
+# Função auxiliar para registrar uso de ferramentas
+def registrar_uso(nome_ferramenta):
+    stats = carregar_stats()
+    stats["ferramentas"][nome_ferramenta] = stats["ferramentas"].get(nome_ferramenta, 0) + 1
+    salvar_stats(stats)
+
+# ==========================================
+# 4. ROTAS PRINCIPAIS (INDEX E ADMIN)
+# ==========================================
 
 @app.route("/")
 def index():
-    return render_template("index.html")
-
-######################### visitas
-stats_dados = {
-    "total_visitas": 0
-}
-
-# Rota para o JavaScript consultar o número em tempo real(procurar uma outra maneira n usando Java)
-@app.route("/api/stats")
-def api_stats():
-    return jsonify({
-        "total": stats_dados["total_visitas"]
-    })
-
-# Modifique sua rota index para contar a visita
-def index():
-    # Verifica se o usuário já foi contado nesta sessão
+    stats = carregar_stats()
+    
+    # Lógica de contagem de visita única por sessão
     if 'contado' not in session:
-        stats_dados["total_visitas"] += 1
+        stats["total"] += 1
+        salvar_stats(stats)
         session['contado'] = True
     
-    return render_template("index.html", total_acessos=stats_dados["total_visitas"])
+    return render_template("index.html", total_acessos=stats["total"])
+
+@app.route("/api/stats")
+def api_stats():
+    stats = carregar_stats()
+    return jsonify({"total": stats["total"]})
+
+# Rota protegida pelo login_required
+@app.route("/admin")
+@login_required
+def admin_panel():
+    stats = carregar_stats()
+    return render_template("admin.html", stats=stats)
+
 
 # ==========================
-# Calendário
+# Ferramentas (Com Registro de Uso)
 # ==========================
+
 @app.route("/calendario", methods=["GET", "POST"])
 def calendario_page():
+    registrar_uso("calendario")
     try:
         ano = int(request.form.get("ano", 2025))
         mes = int(request.form.get("mes", 9))
     except ValueError:
         flash("Ano ou mês inválido.", "error")
-        # Passa MESES_PT e DIAS_PT para o template, mesmo em caso de erro
         return render_template("calendario.html", dias_do_mes=None, feriados=None, ano=ano, mes=mes, MESES_PT=MESES_PT, dias_semana=DIAS_PT)
 
     if not (1900 <= ano <= 2100) or not (1 <= mes <= 12):
         flash("Ano ou mês fora do intervalo permitido.", "error")
-        # Passa MESES_PT e DIAS_PT para o template, mesmo em caso de erro
         return render_template("calendario.html", dias_do_mes=None, feriados=None, ano=ano, mes=mes, MESES_PT=MESES_PT, dias_semana=DIAS_PT)
 
-    # Agora a função retorna dias_do_mes, dias_semana e feriados
     dias_do_mes, dias_semana, feriados = gerar_calendario(ano, mes)
     return render_template("calendario.html", dias_do_mes=dias_do_mes, feriados=feriados, ano=ano, mes=mes, MESES_PT=MESES_PT, dias_semana=dias_semana)
 
 
-# ==========================
-# QR Code
-# ==========================
 @app.route("/qrcode", methods=["GET", "POST"])
 def qrcode_page():
+    registrar_uso("qrcode")
     arquivo = None
     if request.method == "POST":
         texto = request.form.get("texto", "").strip()
@@ -103,18 +158,14 @@ def qrcode_page():
     return render_template("qrcode.html", arquivo=arquivo)
 
 
-# ==========================
-# YouTube Downloader
-# ==========================
 @app.route("/youtube", methods=["GET", "POST"])
 def youtube_page():
+    registrar_uso("youtube")
     arquivo = None
     erro = None
     if os.environ.get("RENDER") == "true":
         erro = ( "⚠️ O módulo de download do YouTube não está disponível na versão online. "
-        "Por motivos de segurança e restrições da plataforma Render, "
-        "o servidor em nuvem não permite conexões diretas com o YouTube. "
-        "Para utilizar este recurso, execute o portal localmente no seu computador."
+        "Por motivos de segurança e restrições da plataforma Render."
         )
     elif request.method == "POST":
         link = request.form.get("link", "").strip()
@@ -128,24 +179,18 @@ def youtube_page():
     return render_template("youtube.html", arquivo=arquivo, erro=erro)
 
 
-# ==========================
-# Conversor de moedas
-# ==========================
 @app.route("/conversor", methods=["GET", "POST"])
 def conversor_page():
+    registrar_uso("conversor_moedas")
     resultado, erro, valor_float = None, None, None
     de, para = "USD", "BRL"
     
     if request.method == "POST":
         try:
-            # Pega o valor do formulário e limpa possíveis vírgulas
             valor_raw = request.form.get("valor", "0").replace(',', '.')
             valor_float = float(valor_raw)
-            
             de = request.form.get("de", "USD")
             para = request.form.get("para", "BRL")
-            
-            # Chama o script de conversão
             resultado = conversor.converter(valor_float, de, para)
             
             if resultado is None:
@@ -156,11 +201,9 @@ def conversor_page():
     return render_template("conversor.html", resultado=resultado, erro=erro, valor=valor_float, de=de, para=para)
 
 
-# ==========================
-# Média Escolar
-# ==========================
 @app.route("/media", methods=["GET", "POST"])
 def media_page():
+    registrar_uso("media_escolar")
     resultado = None
     if request.method == "POST":
         materias_dict = {}
@@ -185,11 +228,10 @@ def media_page():
 
     return render_template("media_escolar.html", resultado=resultado)
 
-# ==========================
-# Conversor de Temperatura
-# ==========================
+
 @app.route("/temperatura", methods=["GET", "POST"])
 def temperatura_page():
+    registrar_uso("conversor_temperatura")
     resultado = None
     if request.method == "POST":
         try:
@@ -203,11 +245,9 @@ def temperatura_page():
     return render_template("conversor_temperatura.html", resultado=resultado)
 
 
-# ==========================
-# Gerador de Senhas
-# ==========================
 @app.route("/senhas", methods=["GET", "POST"])
 def senhas_page():
+    registrar_uso("gerador_senhas")
     senha = None
     if request.method == "POST":
         try:
@@ -221,11 +261,9 @@ def senhas_page():
     return render_template("senhas.html", senha=senha)
 
 
-# ==========================
-# Sorteio Simples
-# ==========================
 @app.route("/sorteio", methods=["GET", "POST"])
 def sorteio_page():
+    registrar_uso("sorteio_simples")
     resultado = None
     if request.method == "POST":
         nomes = request.form.get("nomes", "")
@@ -235,11 +273,9 @@ def sorteio_page():
     return render_template("sorteio.html", resultado=resultado)
 
 
-# ==========================
-# Sorteio de Equipes
-# ==========================
 @app.route("/equipes", methods=["GET", "POST"])
 def equipes_page():
+    registrar_uso("sorteio_equipes")
     equipes, erro = None, None
     if request.method == "POST":
         nomes = request.form.get("nomes", "")
@@ -252,11 +288,9 @@ def equipes_page():
     return render_template("equipes.html", equipes=equipes, erro=erro)
 
 
-# ==========================
-# Analisador de Texto
-# ==========================
 @app.route("/texto", methods=["GET", "POST"])
 def texto_page():
+    registrar_uso("analisador_texto")
     resultado = None
     if request.method == "POST":
         texto = request.form.get("texto", "")
@@ -266,11 +300,9 @@ def texto_page():
     return render_template("texto_stats.html", resultado=resultado)
 
 
-# ==========================
-# IMC
-# ==========================
 @app.route("/imc", methods=["GET", "POST"])
 def imc_page():
+    registrar_uso("calculadora_imc")
     resultado = None
     if request.method == "POST":
         peso = request.form.get("peso", 0)
@@ -282,11 +314,10 @@ def imc_page():
             resultado = res
     return render_template("imc.html", resultado=resultado)
 
-# ==========================
-# Editor de Imagens
-# ==========================
+
 @app.route("/editor", methods=["GET", "POST"])
 def editor_page():
+    registrar_uso("editor_imagem")
     imagem_processada = None
     erro = None
     filtros_disponiveis = [
@@ -307,15 +338,11 @@ def editor_page():
                 return render_template("editor_filtros.html", erro=erro, filtros=filtros_disponiveis)
 
             filtro = request.form.get("filtro", "preto_branco")
-
             from scripts import editor_imagem
             from PIL import Image
             img = Image.open(imagem_file.stream)
-
-            # Aplica filtro escolhido
             img_editada = editor_imagem.aplicar_filtros(img, [filtro])
 
-            # Converte imagem para base64
             import io, base64
             img_bytes = io.BytesIO()
             img_editada.save(img_bytes, format="PNG")
@@ -332,17 +359,18 @@ def editor_page():
         imagem_processada=imagem_processada
     )
 
-# ==========================
-# Quiz de Programação
-# ==========================
+
 @app.route("/iniciar_quiz")
 def iniciar_quiz():
     quiz.inicializar_quiz(session)
     return redirect(url_for('quiz_page'))
 
+
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz_page():
+    # Nota: Não coloquei registrar_uso aqui para não contar cada resposta como uma visita nova
     if 'perguntas_restantes_ids' not in session:
+        registrar_uso("quiz") # Conta apenas quando inicia
         quiz.inicializar_quiz(session)
 
     if request.method == "POST":
@@ -376,11 +404,9 @@ def quiz_page():
         return render_template('quiz_final.html', mensagem=mensagem_final)
 
 
-# ==========================
-# Orçamento
-# ==========================
 @app.route("/orcamento", methods=["GET", "POST"])
 def orcamento_page():
+    registrar_uso("orcamento")
     resumo, erro, csv_file = None, None, None
     if request.method == "POST":
         receitas_texto = request.form.get("receitas", "").strip()
@@ -391,7 +417,6 @@ def orcamento_page():
         else:
             try:
                 resumo = orcamento.resumir(receitas_texto, despesas_texto)
-                # Caso queira gerar CSV: csv_file = orcamento.gerar_csv(resumo, OUTPUTS)
             except ValueError as e:
                 erro = str(e)
             except Exception as e:
@@ -399,16 +424,15 @@ def orcamento_page():
 
     return render_template("orcamento.html", resumo=resumo, erro=erro, csv_file=csv_file)
 
+
 @app.route("/downloads/<filename>")
 def download_file(filename):
     return send_from_directory(OUTPUTS, filename, as_attachment=True)
 
 
-# ==========================
-# Calculadora
-# ==========================
 @app.route("/calculadora", methods=["GET", "POST"])
 def calculadora_page():
+    registrar_uso("calculadora")
     resultado, erro = None, None
     a, b, operacao = None, None, None
 
@@ -420,18 +444,14 @@ def calculadora_page():
         if err:
             erro = err
         else:
-            # Arredonda para 6 casas decimais se for um número, senão mantém o valor
             resultado = round(res, 6) if isinstance(res, (int, float)) else res
 
     return render_template("calculadora.html", resultado=resultado, erro=erro, a=a, b=b, operacao=operacao)
 
 
-
-# ==========================
-# Tradutor
-# ==========================
 @app.route("/tradutor", methods=["GET", "POST"])
 def tradutor_page():
+    registrar_uso("tradutor")
     traducao, erro = None, None
     texto_original = ""
     target_lang_selected = "en"
@@ -452,11 +472,9 @@ def tradutor_page():
                            target_lang_selected=target_lang_selected)
 
 
-# ==========================
-# Encurtador de Links
-# ==========================
 @app.route("/encurtador", methods=["GET", "POST"])
 def encurtador_page():
+    registrar_uso("encurtador")
     short, erro = None, None
     if request.method == "POST":
         link = request.form.get("link", "")
@@ -465,11 +483,10 @@ def encurtador_page():
             erro = "Falha ao encurtar. Verifique o link."
     return render_template("encurtador.html", short=short, erro=erro)
 
-# ==========================
-# Juros Compostos
-# ==========================
+
 @app.route("/juros_compostos", methods=["GET", "POST"])
 def juros_compostos_page():
+    registrar_uso("juros_compostos")
     resultado, erro = None, None
 
     if request.method == "POST":
@@ -485,11 +502,10 @@ def juros_compostos_page():
 
     return render_template("juros_compostos.html", resultado=resultado, erro=erro)
 
-# ==========================
-# Clima
-# ==========================
+
 @app.route("/clima", methods=["GET", "POST"])
 def clima_page():
+    registrar_uso("clima")
     dados = None
     cidade = ""
     if request.method == "POST":
@@ -499,22 +515,19 @@ def clima_page():
     return render_template("clima.html", dados=dados, cidade=cidade)
 
 
-# ==========================
-# Mapa Turístico
-# ==========================
 @app.route("/mapa_turistico")
 def mapa_turistico_view():
+    registrar_uso("mapa_turistico")
     return render_template("mapa_turistico.html")
 
 @app.route("/pontos_turisticos")
 def pontos_turisticos_json():
     return jsonify(mapa_turistico.obter_pontos_turisticos())
 
-# ==========================
-# Consumo de Combustível
-# ==========================
+
 @app.route("/consumo_combustivel", methods=["GET", "POST"])
 def consumo_combustivel_page():
+    registrar_uso("consumo_combustivel")
     resultado = None
     erro = None
     if request.method == "POST":
@@ -525,7 +538,7 @@ def consumo_combustivel_page():
             ida_volta = "ida_volta" in request.form
 
             if ida_volta:
-                distancia *= 2  # dobra a distância
+                distancia *= 2 
 
             if consumo <= 0:
                 erro = "O consumo médio deve ser maior que zero."
@@ -540,13 +553,9 @@ def consumo_combustivel_page():
     return render_template("consumo_combustivel.html", resultado=resultado, erro=erro)
 
 
-
-
-# ==========================
-# Conversor de Tempo
-# ==========================
 @app.route("/conversor_tempo", methods=["GET", "POST"])
 def conversor_tempo_page():
+    registrar_uso("conversor_tempo")
     resultado = None
     erro = None
     if request.method == "POST":
@@ -559,9 +568,10 @@ def conversor_tempo_page():
             resultado, erro = converter_tempo(valor, unidade_origem, unidade_destino)
     return render_template("conversor_tempo.html", resultado=resultado, erro=erro)
 
-# Conversor de Medidas
+
 @app.route("/conversor_medidas", methods=["GET", "POST"])
 def conversor_medidas_page():
+    registrar_uso("conversor_medidas")
     resultado = erro = None
     if request.method == "POST":
         valor = request.form.get("valor")
@@ -575,17 +585,10 @@ def conversor_medidas_page():
     return render_template("conversor_medidas.html", resultado=resultado, erro=erro)
 
 
-# ==========================
-# Outputs
-# ==========================
 @app.route("/outputs/<path:filename>")
 def arquivos(filename):
     return send_from_directory(OUTPUTS, filename)
     
-
-# ==========================
-# Inicialização
-# ==========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Usa a porta do Render ou 5000 localmente
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)

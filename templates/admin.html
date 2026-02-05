@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | 🚀 Portal Python</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .admin-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .stats-box {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        .card-total {
+            background: var(--accent);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        .card-total h2 { font-size: 3rem; margin: 10px 0; }
+        
+        .tabela-uso {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tabela-uso th, .tabela-uso td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .badge {
+            background: #eef2ff;
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .ferramenta-nome { text-transform: capitalize; font-weight: 500; }
+    </style>
+</head>
+<body class="fundo-principal">
+
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>📊 Estatísticas de Uso</h1>
+            <a href="/" class="page button" style="text-decoration: none;">Voltar ao Início</a>
+        </header>
+
+        <div class="stats-box">
+            <div class="card-total">
+                <span>Total de Visitas</span>
+                <h2>{{ stats.total }}</h2>
+                <small>Visitantes únicos</small>
+            </div>
+
+            <div class="card-detalhes">
+                <h3>🔥 Ranking de Ferramentas</h3>
+                <table class="tabela-uso">
+                    <thead>
+                        <tr>
+                            <th>Ferramenta</th>
+                            <th>Acessos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ferramenta, total in stats.ferramentas.items()|sort(attribute='1', reverse=True) %}
+                        <tr>
+                            <td class="ferramenta-nome">{{ ferramenta.replace('_', ' ') }}</td>
+                            <td><span class="badge">{{ total }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

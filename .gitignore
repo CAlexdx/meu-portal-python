@@ -16,3 +16,11 @@ outputs/
 # Bancos de dados locais ou logs
 *.log
 *.db
+
+# --- SEGURANÇA E ESTATÍSTICAS ---
+
+# Variáveis de ambiente (senhas)
+.env
+
+# Estatísticas de acesso (evita zerar no deploy)
+stats.json
