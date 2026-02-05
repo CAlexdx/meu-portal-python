@@ -1,3 +1,18 @@
-__pycache__/
-*.pyc
+# Ambientes Virtuais
+venv/
+env/
 .venv/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+
+# Arquivos de saída do seu Portal (vídeos, imagens, QRs)
+outputs/
+
+# Configurações do VS Code
+.vscode/
+
+# Bancos de dados locais ou logs
+*.log
+*.db
