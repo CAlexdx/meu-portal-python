@@ -21,7 +21,7 @@ from scripts import (
     calendario, conversor_medidas, gerar_qrcode, PYtube, conversor, media_escolar,
     conversor_temperatura, senhas, sorteio, sorteio_equipes, texto_stats, imc,
     editor_imagem, quiz, orcamento, calculadora, tradutor, encurtador, juros_compostos, mapa_turistico,
-    clima
+    clima, clt_vs_pj
 )
 
 # ==========================================
@@ -583,6 +583,17 @@ def conversor_medidas_page():
         else:
             resultado = round(r, 4)
     return render_template("conversor_medidas.html", resultado=resultado, erro=erro)
+
+
+@app.route("/clt_vs_pj", methods=["GET", "POST"])
+def clt_vs_pj_page():
+    registrar_uso("clt_vs_pj")
+    resultado = erro = None
+    if request.method == "POST":
+        salario = request.form.get("salario", 0)
+        dependentes = request.form.get("dependentes", 0)
+        resultado, erro = clt_vs_pj.calcular_clt_vs_pj(salario, dependentes)
+    return render_template("clt_vs_pj.html", resultado=resultado, erro=erro)
 
 
 @app.route("/outputs/<path:filename>")
