@@ -9,3 +9,4 @@ holidays
 deep-translator
 gunicorn
 python-dotenv
+reportlab
