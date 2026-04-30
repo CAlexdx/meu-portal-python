@@ -723,3 +723,23 @@ header img {
 @media (max-width: 600px) {
     .contador-fixo { bottom: 80px; }
    }
+
+
+.categorias-home {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.categorias-home section {
+    margin-bottom: 28px;
+}
+.categorias-home h2 {
+    margin: 8px 4px 12px;
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.loading-status {
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--accent);
+}

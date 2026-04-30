@@ -9,7 +9,7 @@
 <body>
   <div class="page">
     <h1>🌍 Tradutor Simples</h1>
-    <form method="post">
+    <form method="post" id="tradutor-form">
       <textarea name="texto" rows="6" placeholder="Digite o texto para traduzir (ex: 'Olá, mundo!' para testar)..." required>{{ texto_original }}</textarea>
       
       <label for="target-lang">Traduzir para:</label>
@@ -26,8 +26,10 @@
         <option value="ar" {% if target_lang_selected == 'ar' %}selected{% endif %}>Árabe</option>
         <option value="nl" {% if target_lang_selected == 'nl' %}selected{% endif %}>Holandês</option>
       </select>
-      <button type="submit">Traduzir</button>
+      <button type="submit" id="tradutor-btn">Traduzir</button>
     </form>
+
+    <p id="tradutor-loading" class="loading-status" hidden>⏳ Traduzindo seu texto...</p>
 
     {% if traducao %}
       <div class="resultado"><b>Tradução:</b> {{ traducao }}</div>
@@ -39,5 +41,15 @@
 
     <p><a href="{{ url_for('index') }}">⬅ Voltar</a></p>
   </div>
+
+  <script>
+    const tradutorForm = document.getElementById('tradutor-form');
+    tradutorForm?.addEventListener('submit', () => {
+      document.getElementById('tradutor-loading').hidden = false;
+      const btn = document.getElementById('tradutor-btn');
+      btn.disabled = true;
+      btn.textContent = 'Traduzindo...';
+    });
+  </script>
 </body>
 </html>

@@ -9,10 +9,12 @@
 <body>
   <div class="page">
     <h1>☁️ Clima Global</h1>
-    <form method="post">
+    <form method="post" id="clima-form">
       <input type="text" name="cidade" placeholder="Digite o nome da cidade..." value="{{ cidade }}">
-      <button type="submit">Buscar</button>
+      <button type="submit" id="clima-btn">Buscar</button>
     </form>
+
+    <p id="clima-loading" class="loading-status" hidden>⏳ Carregando dados do clima...</p>
 
     {% if dados %}
       {% if dados.erro %}
@@ -48,5 +50,15 @@
 
     <p><a href="{{ url_for('index') }}">⬅️ Voltar</a></p>
   </div>
+
+  <script>
+    const climaForm = document.getElementById('clima-form');
+    climaForm?.addEventListener('submit', () => {
+      document.getElementById('clima-loading').hidden = false;
+      const btn = document.getElementById('clima-btn');
+      btn.disabled = true;
+      btn.textContent = 'Buscando...';
+    });
+  </script>
 </body>
 </html>
