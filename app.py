@@ -10,12 +10,14 @@ from flask import Flask, render_template, jsonify, request, send_from_directory,
 from werkzeug.utils import secure_filename
 from PIL import Image, UnidentifiedImageError
 
+
 # Scripts do projeto
 from scripts.tradutor import traduzir
 from scripts.consumo_combustivel import calcular_consumo_medio
 from scripts.calendario import gerar_calendario, MESES_PT, DIAS_PT
 from scripts.conversor_tempo import converter_tempo
 from scripts.conversor_medidas import converter_medida
+from scripts.curriculo import gerar_curriculo
 
 from scripts import (
     calendario, conversor_medidas, gerar_qrcode, PYtube, conversor, media_escolar,
@@ -594,6 +596,72 @@ def clt_vs_pj_page():
         dependentes = request.form.get("dependentes", 0)
         resultado, erro = clt_vs_pj.calcular_clt_vs_pj(salario, dependentes)
     return render_template("clt_vs_pj.html", resultado=resultado, erro=erro)
+
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+@app.route("/curriculo", methods=["GET", "POST"])
+def curriculo_page():
+    registrar_uso("curriculo")
+
+    arquivo_pdf = None
+    erro = None
+
+    if request.method == "POST":
+        try:
+            nome = request.form.get("nome")
+            email = request.form.get("email")
+            telefone = request.form.get("telefone")
+            habilidades = request.form.get("habilidades")
+            experiencia = request.form.get("experiencia")
+
+            if not nome or not email:
+                erro = "Nome e email são obrigatórios."
+            else:
+                filename = f"curriculo_{uuid4().hex}.pdf"
+                filepath = os.path.join(OUTPUTS, filename)
+
+                c = canvas.Canvas(filepath, pagesize=letter)
+
+                y = 750
+                c.setFont("Helvetica-Bold", 16)
+                c.drawString(50, y, nome)
+
+                y -= 30
+                c.setFont("Helvetica", 12)
+                c.drawString(50, y, f"Email: {email}")
+                y -= 20
+                c.drawString(50, y, f"Telefone: {telefone}")
+
+                y -= 30
+                c.setFont("Helvetica-Bold", 14)
+                c.drawString(50, y, "Habilidades")
+                y -= 20
+                c.setFont("Helvetica", 12)
+
+                for linha in habilidades.split("\n"):
+                    c.drawString(50, y, f"- {linha}")
+                    y -= 15
+
+                y -= 20
+                c.setFont("Helvetica-Bold", 14)
+                c.drawString(50, y, "Experiência")
+                y -= 20
+                c.setFont("Helvetica", 12)
+
+                for linha in experiencia.split("\n"):
+                    c.drawString(50, y, f"- {linha}")
+                    y -= 15
+
+                c.save()
+
+                arquivo_pdf = filename
+
+        except Exception as e:
+            erro = f"Erro ao gerar currículo: {e}"
+
+    return render_template("curriculo.html", arquivo_pdf=arquivo_pdf, erro=erro)
 
 
 @app.route("/outputs/<path:filename>")

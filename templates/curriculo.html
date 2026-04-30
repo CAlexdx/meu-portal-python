@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>Gerador de Currículo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="page">
+    <h1>📄 Gerador de Currículo</h1>
+
+    {% if erro %}
+        <div class="alerta error">{{ erro }}</div>
+    {% endif %}
+
+    <form method="POST">
+        <input type="text" name="nome" placeholder="Nome completo" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="telefone" placeholder="Telefone">
+
+        <textarea name="habilidades" placeholder="Habilidades (uma por linha)"></textarea>
+        <textarea name="experiencia" placeholder="Experiência (uma por linha)"></textarea>
+
+        <button type="submit">Gerar Currículo</button>
+    </form>
+
+    {% if arquivo_pdf %}
+        <div class="resultado success">
+            Currículo gerado com sucesso!
+            <br><br>
+            <a href="{{ url_for('download_file', filename=arquivo_pdf) }}">📥 Baixar PDF</a>
+        </div>
+    {% endif %}
+
+    <br>
+    <a href="/">⬅ Voltar</a>
+</div>
+
+</body>
+</html>
